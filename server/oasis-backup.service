@@ -1,0 +1,7 @@
+[Unit]
+Description=Back up Oasis database, keys and matched release
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/oasis-backup
+UMask=0077

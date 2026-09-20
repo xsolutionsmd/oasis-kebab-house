@@ -1,0 +1,73 @@
+[
+  {
+    "file": "platter.webp",
+    "source": "https://www.instagram.com/p/CDFcEOjDS2g/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "29c4ce604b19cab2b9d11f7d497193011ad508ec2d3d38bfcab925c329b6d8db"
+  },
+  {
+    "file": "interior.webp",
+    "source": "https://www.instagram.com/p/CVsu8vdLwXW/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "2272cb8c3154488c95a24f4d802c8340f4b69b7e47db26b018f7446ec529e6d5"
+  },
+  {
+    "file": "samarkand.webp",
+    "source": "https://www.instagram.com/p/CAtMtTmjMs0/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "1d07d2c4f14e8e9b4969c33a118c1fd70b5594e135751001795a0836b98c3255"
+  },
+  {
+    "file": "samsa.webp",
+    "source": "https://www.instagram.com/p/CVsvWw8L0YE/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "dc6917d809e1d86ba55e43458f328e3dfd07d5c8104fdb6c18508c88bb409b56"
+  },
+  {
+    "file": "patio.webp",
+    "source": "https://www.instagram.com/p/C9ApN0guIgQ/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "e541d1806580b26a727ce1f809e3d8bd0fdb5b9115ea3b6e0212228596d440fb"
+  },
+  {
+    "file": "bread.webp",
+    "source": "https://www.instagram.com/p/CAtMDuoDoN9/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "2ffbd44f8bb15b3aaebe4217ea16e272e06deb10070f674e1dbeb6b9dd0cdce6"
+  },
+  {
+    "file": "grill.webp",
+    "source": "https://www.instagram.com/p/CcWhAdwrbpW/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "d76257089b965256a40a695495fa735ddd7fe0de689a26facf214a18d49cc972"
+  },
+  {
+    "file": "entrance.webp",
+    "source": "https://www.instagram.com/p/CzfYlPdMIi-/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "152763444e0e837084bdfa5409d3c386ce6bbb315e6277279127c9c74470e55d"
+  },
+  {
+    "file": "shrimp.webp",
+    "source": "https://www.instagram.com/p/CBPU9AxD6Uk/",
+    "transformation": "EXIF orientation, resize, WebP compression; no generated pixels",
+    "original_sha256": "4d4e18c40bbc0a6194074b409a4b90402f8f2f2f1ba4cccaf16f0ee5fd8ffa6a"
+  },
+  {
+    "file": "logo.png",
+    "source": "https://oasiskebabhouse.com/",
+    "transformation": "Original logo, unchanged"
+  },
+  {
+    "file": "plov.mp4",
+    "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
+    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 8 seconds; no generated pixels",
+    "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
+  },
+  {
+    "file": "plov.webp",
+    "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
+    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 8 seconds; no generated pixels",
+    "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
+  }
+]

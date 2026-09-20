@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "name": "oasis",
+  "repository": "xsolutionsmd/oasis-kebab-house",
+  "source": "app",
+  "service": "app",
+  "container_port": 8080,
+  "local_port": 8789,
+  "health_path": "/health",
+  "version_path": "/version.json",
+  "stateful": true,
+  "backup_command": ["python", "backup.py", "/data/backups"]
+}
