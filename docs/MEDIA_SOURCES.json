@@ -61,13 +61,13 @@
   {
     "file": "plov.mp4",
     "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
-    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 8 seconds; no generated pixels",
+    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 12 seconds; no generated pixels",
     "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
   },
   {
     "file": "plov.webp",
     "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
-    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 8 seconds; no generated pixels",
+    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 12 seconds; no generated pixels",
     "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
   }
 ]
