@@ -8,7 +8,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DATA_DIR=/data
 WORKDIR /workspace
 COPY app/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && useradd -u 10001 -m oasis && mkdir /data && chown oasis:oasis /data
-COPY --chown=oasis:oasis app/ /workspace/
+COPY --chown=oasis:oasis app/*.py /workspace/
+COPY --chown=oasis:oasis app/static/ /workspace/static/
+COPY --chown=oasis:oasis app/templates/ /workspace/templates/
 RUN printf '%s' "${REVISION:-$APP_REVISION}" > /workspace/revision.txt
 USER oasis
 EXPOSE 8080
@@ -16,8 +18,10 @@ HEALTHCHECK --interval=15s --timeout=4s --start-period=15s --retries=5 CMD pytho
 FROM base AS development
 CMD ["gunicorn","--bind","0.0.0.0:8080","--workers","1","--threads","4","--timeout","45","--config","gunicorn.conf.py","wsgi:app"]
 FROM base AS check
+COPY --chown=oasis:oasis app/tests/ /workspace/tests/
 CMD ["python","-m","pytest","-q","tests"]
 FROM base AS test
+COPY --chown=oasis:oasis app/tests/ /workspace/tests/
 RUN python -m pytest -q -p no:cacheprovider tests
 FROM base AS runtime
 CMD ["gunicorn","--bind","0.0.0.0:8080","--workers","1","--threads","4","--timeout","45","--config","gunicorn.conf.py","wsgi:app"]
