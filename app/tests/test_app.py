@@ -54,10 +54,10 @@ def test_capacity_and_overlapping_slots(client,app):
     assert client.post('/api/reservations',json=p,headers=h).status_code==400
     p['guests']=1;assert client.post('/api/reservations',json=p,headers=h).status_code==201
     with app.db() as c:assert c.execute('SELECT SUM(guests) FROM reservations').fetchone()[0]==4
-def test_viewer_read_only(client,app):
+def test_employee_cannot_change_admin_configuration(client,app):
     with app.db() as c:c.execute("INSERT INTO members(email,role) VALUES('viewer@example.test','viewer')")
     h=login(client,'viewer@example.test');assert client.get('/api/admin/data').status_code==200
-    for method,url,p in [('put','/api/admin/settings',{}),('post','/api/admin/invitations',{'email':'new@example.test'}),('delete','/api/admin/members',{'email':'first@example.test'}),('patch','/api/admin/orders/1',{'status':'accepted'}),('post','/api/admin/email-disconnect',{})]:assert getattr(client,method)(url,json=p,headers=h).status_code==403
+    for method,url,p in [('put','/api/admin/settings',{}),('post','/api/admin/invitations',{'email':'new@example.test'}),('delete','/api/admin/members',{'email':'first@example.test'}),('post','/api/admin/email-disconnect',{})]:assert getattr(client,method)(url,json=p,headers=h).status_code==403
 def test_any_admin_can_remove_original_and_revokes_session(client,app):
     h=login(client);other=app.test_client()
     with app.db() as c:c.execute("INSERT INTO members(email,role) VALUES('second@example.test','admin')");c.execute("INSERT INTO secrets VALUES('gmail','independent-sender-marker')")
@@ -104,3 +104,37 @@ def test_no_sending_without_connection_and_status_updates(client,app):
 def test_oauth_wrong_state_rejected(client):assert 'error=' in client.get('/oauth/callback?state=forged&code=fake').location
 def test_persistence(tmp_path):
     a=server.create_app({'TESTING':True,'DATA_DIR':str(tmp_path),'OPERATOR_EMAIL':'first@example.test'});c=a.test_client();p=order_body(c);r=c.post('/api/orders',json=p,headers=csrf(c));a2=server.create_app({'TESTING':True,'DATA_DIR':str(tmp_path)});assert a2.test_client().get('/api/status/order/'+r.json['token']).status_code==200
+
+
+def test_employee_manages_customer_requests_only(client,app):
+    h=csrf(client);p=order_body(client)
+    token=client.post('/api/orders',json=p,headers=h).json['token']
+    r=dict(p);r.pop('items');r.update(request_key=str(uuid.uuid4()),guests=2,time=slot(client,'reservation'))
+    reservation=client.post('/api/reservations',json=r,headers=h).json['token']
+    with app.db() as c:c.execute("INSERT INTO members(email,role) VALUES('employee@example.test','viewer')")
+    employee=app.test_client();eh=login(employee,'employee@example.test')
+    for table,kind,tok,statuses in [('orders','order',token,['accepted','preparing','ready','collected']),('reservations','reservation',reservation,['confirmed','seated'])]:
+        ident=client.get('/api/status/'+kind+'/'+tok).json['id']
+        assert client.patch(f'/api/admin/{table}/{ident}',json={'status':statuses[0]},headers=h).status_code==401
+        for status in statuses:
+            result=employee.patch(f'/api/admin/{table}/{ident}',json={'status':status,'note':'Employee customer update'},headers=eh)
+            assert result.status_code==200
+            assert client.get('/api/status/'+kind+'/'+tok).json['status']==status
+        assert employee.patch(f'/api/admin/{table}/{ident}',json={'status':statuses[0]},headers=eh).status_code==409
+    data=employee.get('/api/admin/data').json
+    assert data['members']==[] and data['invitations']==[] and data['outbox']==[]
+    assert employee.put('/api/admin/menu/samarkand-plov',json={},headers=eh).status_code==403
+    with app.db() as c:
+        assert c.execute("SELECT count(*) FROM activity WHERE actor='employee@example.test'").fetchone()[0]==6
+        assert c.execute('SELECT count(*) FROM outbox').fetchone()[0]==8
+
+def test_admin_is_direct_access_only(client):
+    from html.parser import HTMLParser
+    class Links(HTMLParser):
+        def __init__(self):super().__init__();self.hrefs=[]
+        def handle_starttag(self,tag,attrs):
+            if tag=='a':self.hrefs.extend(v for k,v in attrs if k=='href')
+    for route in ['/','/menu','/gallery','/visit','/reserve','/checkout','/privacy']:
+        links=Links();links.feed(client.get(route).text)
+        assert not any(h.startswith('/admin') for h in links.hrefs)
+    assert client.get('/admin',follow_redirects=True).status_code==200

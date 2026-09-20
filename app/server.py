@@ -244,7 +244,7 @@ def create_app(test_config=None):
             return jsonify(orders=rows(c,'orders'),reservations=rows(c,'reservations'),settings=settings(c),members=[dict(r) for r in c.execute('SELECT email,role,active FROM members')] if owner else [],invitations=[dict(r) for r in c.execute('SELECT email,role,expires,used FROM invitations ORDER BY expires DESC LIMIT 100')] if owner else [],outbox=[dict(r) for r in c.execute('SELECT * FROM outbox ORDER BY id DESC LIMIT 100')] if owner else [],sender=sender,demo=app.config['DEMO'])
     transitions={'orders':{'received':['accepted','declined'],'accepted':['preparing','ready','declined'],'preparing':['ready','declined'],'ready':['collected'],'collected':[],'declined':[]},'reservations':{'requested':['confirmed','declined'],'confirmed':['seated','cancelled'],'seated':[],'declined':[],'cancelled':[]}}
     @app.patch('/api/admin/<table>/<int:ident>')
-    @auth(True)
+    @auth()
     def update_record(table,ident):
         if table not in transitions:return err('Not found.',404)
         p=payload();new=text(p,'status',25)
@@ -421,7 +421,7 @@ def create_app(test_config=None):
     @app.get('/reservation/<token>')
     @app.get('/admin/')
     def page(token=None):
-        titles={'/':'Oasis Uzbek Kebab House','/menu':'Menu · Oasis','/gallery':'Gallery · Oasis','/visit':'Visit · Oasis','/reserve':'Reserve a table · Oasis','/checkout':'Pickup checkout · Oasis','/privacy':'Privacy · Oasis','/admin/':'Owner workspace · Oasis'}
+        titles={'/':'Oasis Uzbek Kebab House','/menu':'Menu · Oasis','/gallery':'Gallery · Oasis','/visit':'Visit · Oasis','/reserve':'Reserve a table · Oasis','/checkout':'Pickup checkout · Oasis','/privacy':'Privacy · Oasis','/admin/':'Staff workspace · Oasis'}
         return render_template('index.html',title=titles.get(request.path,'Your request · Oasis'),origin=app.config['ORIGIN'],canonical=app.config['ORIGIN']+request.path)
     return app
 

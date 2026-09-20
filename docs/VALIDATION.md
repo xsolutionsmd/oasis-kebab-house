@@ -10,3 +10,13 @@ Verified September 20, 2026.
 - First production release: main c6af4fbe1566ab6c287965c8764dd0f7070a8daa, PR #1; Oracle workflow 35538458939 passed and exact HTTPS revision matched. Shared server sibling container IDs remained unchanged. DNS/TLS resolve at https://oasis.xsolutionsmd.com.
 
 Limits: this is a prospect demo with test requests, not a restaurant operating launch. Menu/prices, hours, capacity and tax require restaurant confirmation. Gmail sending has not been connected or delivered externally; messages remain previews. Sender OAuth separation is covered by tests; a real Gmail grant and delivery test are still needed. Reticle was not requested and was not used. Rollback fault tests do not simulate sudden host power loss; interrupted recovery remains fail-closed for operator inspection.
+
+## Tikkaville redesign and employee permissions — September 20, 2026
+
+The later user correction supersedes read-only Viewer behavior above: Viewers are employees and may update order/table status and customer update messages. Membership, invitation, menu/settings and sender mutations remain admin-only. Added tests verify successful employee transitions, guest receipt updates, audit/outbox creation, unauthenticated rejection, stale-transition rejection and administrative boundaries. All public page links exclude /admin; direct /admin still redirects successfully to the authenticated workspace.
+
+18 container tests passed. Production image test/runtime build, isolated health/source/revision passed. Both JavaScript files pass node --check. Browser search -> Manti required filling -> quantity2 -> cart -> checkout -> quantity3 preserved name/contact/date; local synthetic order receipt correctly shows3 Beef Manti/$42, pay in store. No external message was sent.
+
+Desktop homepage/menu/item dialog/checkout/gallery/visit and 390px mobile homepage/menu/checkout/reservation inspected. Mobile page widths375/375; all checkout/reservation fields fit their cards. Fixed a floated legend that initially pushed a required option beyond the item dialog; corrected dialog scrollWidth equals clientWidth640. Heading fonts are self-hosted. New plov dish image is a genuine8-second frame from the existing source video. No generated photos, competitor media or fabricated business details were shipped. The reference and Stitch evidence are recorded in DESIGN.md.
+
+Current changes use the existing unchanged stateful updater; no new infrastructure or migration. Live release evidence is maintained in the private client deployment record after the normal checked PR/main release completes.
