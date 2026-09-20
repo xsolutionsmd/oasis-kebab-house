@@ -5,3 +5,4 @@
 @media(max-width:370px){.site-header{padding:5px 12px;gap:10px}.header-actions{gap:8px}.logo img{width:76px}.header-order{padding:8px;font-size:11px}.contact summary{font-size:12px}.hero-copy h1{font-size:47px}}
 .hero-copy .button{color:#172a2d;font-weight:700}.hero-copy .button:hover{color:#102023}.featured-row{scrollbar-width:thin}
 .item-options legend{float:none;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0;width:100%}.item-options legend span{float:none}.option-row{clear:both;min-width:0}.option-row span{min-width:0;overflow-wrap:anywhere}
+.member-row small{display:block;margin-top:5px;color:var(--muted)}
