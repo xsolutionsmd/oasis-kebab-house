@@ -26,7 +26,7 @@ The preview uses Compose project `oasis-abdul-dev`, alias `oasis-abdul-dev-app`,
 
 Google admin sign-in remains separate from sending email. Team membership is also separate from the main site. Both partners can manage this preview; no production team permissions are changed.
 
-The checked release asset is `abdul-dev-<full-sha>/deployment.json`, marked as a prerelease and never latest. The root-owned updater follows only `abdul-dev`, rejects superseded revisions/wrong images, and deploys by digest. Main's publisher, release tags, updater, data and route are unchanged. There is no GitHub-to-server SSH key. Preview publishes automatically on push; a manual dispatch can retry the same current branch revision.
+The checked release asset is `abdul-dev-<full-sha>/deployment.json`, marked as a prerelease and never latest. The root-owned updater follows only `abdul-dev`, rejects superseded revisions/wrong images, and deploys by digest. Main's publisher, release tags, updater, data and route are unchanged. There is no GitHub-to-server SSH key. Preview publishes automatically on push; use GitHub Actions > the failed run > Re-run failed jobs to retry. Manual workflow dispatch becomes available after the workflow also exists on the repository default branch.
 
 Installer: `sudo bash server/abdul-dev/install.sh`. Runtime secrets must already exist in `/opt/oasis-abdul-dev/runtime.env` (root0600). Route fragment: `deploy/abdul-dev.caddy`. Enable first deployment with `sudo systemctl enable --now oasis-abdul-dev-update.timer` after routing/setup. Never install production's scripts over this preview or vice versa.
 
