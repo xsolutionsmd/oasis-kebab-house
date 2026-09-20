@@ -154,7 +154,11 @@ def create_app(test_config=None):
         when=datetime.fromisoformat(d['time']).strftime('%A, %B %d at %I:%M %p')
         details=f"Hi {d['name']},\n\n{label}.\n{when}\n"
         if status in ('received','requested'):details+='Please wait for restaurant confirmation.\n'
-        if kind=='order':details+='Pay in the restaurant when you pick up.\n'
+        if kind=='order':
+            for line in d['items']:
+                details+=f"{line['quantity']} × {line['name']}"+(' · '+', '.join(line['choices'].values()) if line['choices'] else '')+'\n'
+            details+=f"Total: ${d['total']/100:.2f}\nPay in the restaurant when you pick up.\n"
+        else:details+=f"{d['guests']} guests\n"
         if d.get('update_note'):details+='\n'+d['update_note']+'\n'
         details+=f'\nOasis Uzbek Kebab House\n1430 Reisterstown Rd, Pikesville, MD 21208\n410-777-9700\n\nView {kind}: {url}\n'
         if app.config['DEMO']:details='WEBSITE DEMO — not a real order or reservation.\n\n'+details
@@ -375,7 +379,7 @@ def create_app(test_config=None):
     def email_test():
         with db() as c:
             if not c.execute("SELECT 1 FROM secrets WHERE name='gmail'").fetchone():raise ValueError('Connect a sender first.')
-            c.execute('INSERT INTO outbox(created,recipient,subject,body,status,event_key) VALUES(?,?,?,?,?,?)',(int(time.time()),session['email'],'Oasis · email test','Your Oasis email connection is working. This test was requested from the owner workspace.','pending','test:'+secrets.token_hex(12)))
+            c.execute('INSERT INTO outbox(created,recipient,subject,body,status,event_key) VALUES(?,?,?,?,?,?)',(int(time.time()),session['email'],'Oasis · email test','Your Oasis email connection is working. This test was requested from the admin workspace.','pending','test:'+secrets.token_hex(12)))
         return jsonify(ok=True)
     @app.post('/api/admin/email-disconnect')
     @auth(True)

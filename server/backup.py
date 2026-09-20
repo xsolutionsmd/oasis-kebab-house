@@ -7,6 +7,8 @@ def main():
     state=Path('/var/lib/oasis-deploy');root=Path('/opt/oasis')
     with (state/'update.lock').open('w') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
+        if not (state/'current.json').is_file() or not (root/'data/oasis.sqlite3').is_file():
+            print('No initialized release to back up yet');return
         if (state/'transaction').exists():raise SystemExit('Deployment recovery is pending; preserve evidence first')
         with tempfile.TemporaryDirectory(prefix='backup-',dir=state) as tmp:
             tmp=Path(tmp);data=tmp/'data';data.mkdir()
