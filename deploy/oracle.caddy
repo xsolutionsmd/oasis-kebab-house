@@ -1,0 +1,3 @@
+oasis.xsolutionsmd.com {
+    reverse_proxy oasis-app:8080
+}

@@ -1,0 +1,15 @@
+.runtime/
+.graft-context/
+/graft/
+.reticle/
+.design-evidence/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.stitch/
+.pytest_cache/
+*.sqlite3*
+*.key
+client_secret*.json

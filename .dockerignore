@@ -1,0 +1,16 @@
+.git
+.env*
+.runtime
+.stitch
+.design-evidence
+.graft-context
+graft
+__pycache__
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/*.sqlite3*
+**/*.key
+.reticle
+server
+docs

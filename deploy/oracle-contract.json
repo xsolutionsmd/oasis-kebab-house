@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "repo": "xsolutionsmd/oasis-kebab-house",
+  "slug": "oasis",
+  "hostname": "oasis.xsolutionsmd.com",
+  "port": 8080,
+  "image": "ghcr.io/xsolutionsmd/oasis-kebab-house",
+  "mode": "stateful-sqlite",
+  "data": "/opt/oasis/data",
+  "credentials": "/opt/oasis/runtime.env",
+  "backup": "/var/lib/oasis-deploy/backups",
+  "architecture": "arm64",
+  "network": "xsolutions-proxy"
+}

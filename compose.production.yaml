@@ -1,0 +1,23 @@
+name: oasis
+services:
+  web:
+    image: ${APP_IMAGE:?Set the approved immutable application image}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    env_file: [/opt/oasis/runtime.env]
+    volumes: [/opt/oasis/data:/data]
+    mem_limit: 256m
+    pids_limit: 100
+    security_opt: [no-new-privileges:true]
+    networks:
+      proxy:
+        aliases: [oasis-app]
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "2"
+networks:
+  proxy:
+    external: true
+    name: xsolutions-proxy
