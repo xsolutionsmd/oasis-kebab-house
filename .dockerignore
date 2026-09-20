@@ -14,3 +14,4 @@ __pycache__
 .reticle
 server
 docs
+app/static/qa
