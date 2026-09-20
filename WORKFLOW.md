@@ -2,7 +2,7 @@
 
 Requirements: Python 3.10+, Git, Docker Engine/Desktop using Linux containers and Compose v2. Application dependencies build in containers.
 
-Clone this repository on dev for development. Run `bash start.sh` or `.\app.ps1 start`; open http://127.0.0.1:8789. Source is mounted from `app/`; restart/reload behavior is supplied by the application's development command. Run `bash update.sh` or `.\app.ps1 update` to fetch the current dev/main branch, refuse dirty/ahead/divergent history, fast-forward and rebuild before replacement. Updating dev leaves main and server releases alone.
+Clone this repository on dev for general development or abdul-dev for Abdul's independently deployed preview. Run `bash start.sh` or `.\app.ps1 start`; open http://127.0.0.1:8789. Source is mounted from `app/`; restart/reload behavior is supplied by the application's development command. Run `bash update.sh` or `.\app.ps1 update` to fetch the current dev/main/abdul-dev branch, refuse dirty/ahead/divergent history, fast-forward and rebuild before replacement. Updating dev leaves main and server releases alone.
 
 `bash app.sh doctor` checks host tools. `bash app.sh check` runs container tests and an isolated production-image health/revision check. PowerShell uses `.\app.ps1 doctor` and `.\app.ps1 check`.
 
@@ -15,3 +15,5 @@ Develop on dev or feature branches targeting dev. Main is the release gate and m
 Before releasing a stateful app, define and test backups, migrations and restore behavior. Image rollback preserves mounted data and cannot undo a data migration. Keep credentials/private runtime out of Git and the Docker context. Record actually tested revisions, URLs, image digests and limitations in the app's validation record.
 
 Whole-repository development context is included: follow [Graft setup](docs/GRAFT.md) after the first local commit and configuring origin. Keep its tools and caches outside the production Docker context. Browser applications keep [Reticle runtime verification](docs/RUNTIME-VERIFICATION.md) available with per-task use opt-in; skip it unless requested. The scaffold supplies the procedure, not a framework-specific SDK installation. An explicit setup request includes an initial integration check or a concrete compatibility blocker. Ordinary tests and release gates remain required. Non-browser apps record it as not applicable.
+
+Abdul preview: see [docs/ABDUL_DEV.md](docs/ABDUL_DEV.md). Source-mode start/update supports abdul-dev; installed mode still follows main.

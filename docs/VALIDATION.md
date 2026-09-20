@@ -20,3 +20,14 @@ The later user correction supersedes read-only Viewer behavior above: Viewers ar
 Desktop homepage/menu/item dialog/checkout/gallery/visit and 390px mobile homepage/menu/checkout/reservation inspected. Mobile page widths375/375; all checkout/reservation fields fit their cards. Fixed a floated legend that initially pushed a required option beyond the item dialog; corrected dialog scrollWidth equals clientWidth640. Heading fonts are self-hosted. New plov dish image is a genuine8-second frame from the existing source video. No generated photos, competitor media or fabricated business details were shipped. The reference and Stitch evidence are recorded in DESIGN.md.
 
 Current changes use the existing unchanged stateful updater; no new infrastructure or migration. Live release evidence is maintained in the private client deployment record after the normal checked PR/main release completes.
+
+
+## Abdul's isolated Oracle preview — September20,2026
+
+Created abdul-dev from main9e1a31f, then installed independent updater, Compose project, data/keys, OAuth client and HTTPS route. First automatic push release6ba3ad277b665492b485765850f0085fd306f1f6 passed Application CI and preview workflow35545025111. Public HTTPS and server receipt matched. Image digest88fa436d2bc0188824de716655c33212a8539e99b8016296b8be983973dbdc8e is in the separate public preview package. Main remains9e1a31f with unchanged container; all sibling containers/gateway preserved.
+
+18 preview updater fault scenarios pass on Linux, including first/subsequent success, absent/stale/malformed release, architecture/candidate/replacement/HTTPS/snapshot/state errors, handled termination and refused interrupted/failed recovery. Real preview Compose was exercised with isolated synthetic configuration, test network/volume and original runtime limits:256MiB,100PIDs, read-only root, non-root user. Recreating its container retained data. Rehearsal resources were removed without touching existing volumes.
+
+Clean second clone on abdul-dev started via shared launcher at localhost8793 with its own persistent volume. Real Google sign-in succeeded at the new HTTPS /admin. Both partners have separate preview admin membership; production memberships and sender connections were untouched. One synthetic $18 plov order was created and accepted through the preview UI, with email unconnected. Session/encryption keys differ from main, and preview began with zero customer requests or sender secrets. Public package visibility and prerelease/main-latest separation were inspected. No external email sent.
+
+The follow-up handoff/branch-guidance commit is also used to verify a subsequent automatic update and synthetic-data persistence. Final exact live receipt and backup evidence are maintained in the private client deployment record. Power-loss recovery and Abdul's own interactive Google login are not claimed; his configured account is ready to sign in.
