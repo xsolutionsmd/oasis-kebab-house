@@ -1,0 +1,23 @@
+name: oasis-abdul-dev
+services:
+  web:
+    image: ${APP_IMAGE:?Set the approved immutable application image}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    env_file: [/opt/oasis-abdul-dev/runtime.env]
+    volumes: [/opt/oasis-abdul-dev/data:/data]
+    mem_limit: 256m
+    pids_limit: 100
+    security_opt: [no-new-privileges:true]
+    networks:
+      proxy:
+        aliases: [oasis-abdul-dev-app]
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "2"
+networks:
+  proxy:
+    external: true
+    name: xsolutions-proxy

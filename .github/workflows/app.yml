@@ -1,9 +1,9 @@
 name: Application CI
 on:
   push:
-    branches: [dev, main]
+    branches: [dev, main, abdul-dev]
   pull_request:
-    branches: [dev, main]
+    branches: [dev, main, abdul-dev]
   workflow_dispatch:
 permissions:
   contents: read

@@ -141,8 +141,8 @@ def backup(mode, env):
 
 def source_update(args):
     branch = run("git", "branch", "--show-current", capture=True)
-    if branch not in ("dev", "main"):
-        raise RuntimeError("Update requires the dev or main branch; detached and feature checkouts are left untouched.")
+    if branch not in ("dev", "main", "abdul-dev"):
+        raise RuntimeError("Update requires the dev, main or abdul-dev branch; detached and feature checkouts are left untouched.")
     if run("git", "status", "--porcelain", "--untracked-files=all", capture=True):
         raise RuntimeError("Commit or stash source changes, including untracked files, before updating.")
     run("git", "fetch", "origin", f"refs/heads/{branch}:refs/remotes/origin/{branch}")
