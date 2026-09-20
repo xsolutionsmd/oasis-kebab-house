@@ -20,7 +20,9 @@ if video.exists() and video.stat().st_size>17000000:
     ffmpeg=shutil.which('ffmpeg') or 'C:/ffmpeg/bin/ffmpeg.exe'
     subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','4','-i',str(video),'-t','28','-an','-vf','crop=720:990:0:0,scale=720:-2,fps=24','-c:v','libx264','-crf','27','-preset','medium','-movflags','+faststart','-y',str(target/'plov.mp4')],check=True)
     subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','12','-i',str(video),'-vf','crop=720:990:0:0','-frames:v','1','-quality','90','-y',str(target/'plov.webp')],check=True)
+    subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','8','-i',str(video),'-vf','crop=720:990:0:0','-frames:v','1','-quality','90','-y',str(target/'plov-dish.webp')],check=True)
     records=[r for r in records if r['file']!='plov.webp']
+    records.append(dict(file='plov-dish.webp',source='https://www.instagram.com/p/C1z2xlPLGG9/',transformation='Original footage frame at 8 seconds, fixed crop; no generated pixels',original_sha256=hashlib.sha256(video.read_bytes()).hexdigest()))
     for name in ('plov.mp4','plov.webp'):records.append(dict(file=name,source='https://www.instagram.com/p/C1z2xlPLGG9/',transformation='Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 12 seconds; no generated pixels',original_sha256=hashlib.sha256(video.read_bytes()).hexdigest()))
     (root/'docs'/'MEDIA_SOURCES.json').write_text(json.dumps(records,indent=2)+'\n')
 print('Prepared',len(records),'authentic media assets')
