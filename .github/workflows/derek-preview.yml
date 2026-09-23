@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Check application
         run: |
+          node --check preview/dist/motion.js
           node --check preview/dist/main.js
           node --check preview/dist/menu.js
           python3 preview/scripts/check_preview.py
