@@ -68,7 +68,10 @@ window.OasisMotion = (() => {
 			image.loading = 'eager';
 		});
 		const start = window.scrollY;
-		const landing = target.querySelector('[data-anchor-content]') || target;
+		const landing =
+			(target.matches('section') &&
+				target.querySelector('[data-anchor-content]')) ||
+			target;
 		// Measure layout, not the temporary transform of an entering reveal.
 		let landingTop = 0;
 		for (let element = landing; element; element = element.offsetParent)
