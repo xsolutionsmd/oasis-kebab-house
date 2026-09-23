@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "repo": "xsolutionsmd/oasis-kebab-house",
+  "slug": "oasis-derek-preview",
+  "hostname": "oasis-derek.xsolutionsmd.com",
+  "port": 8080,
+  "image": "ghcr.io/xsolutionsmd/oasis-kebab-house-derek-preview",
+  "mode": "stateless",
+  "architecture": "arm64",
+  "network": "xsolutions-proxy"
+}

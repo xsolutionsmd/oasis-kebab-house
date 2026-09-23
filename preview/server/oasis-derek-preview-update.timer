@@ -1,0 +1,11 @@
+[Unit]
+Description=Check oasis-derek-preview approved releases
+
+[Timer]
+OnBootSec=45s
+OnUnitInactiveSec=60s
+AccuracySec=5s
+Unit=oasis-derek-preview-update.service
+
+[Install]
+WantedBy=timers.target

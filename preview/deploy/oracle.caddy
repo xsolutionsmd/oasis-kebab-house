@@ -1,0 +1,3 @@
+oasis-derek.xsolutionsmd.com {
+    reverse_proxy oasis-derek-preview:8080
+}

@@ -1,0 +1,506 @@
+[
+  {
+    "id": "samarkand-plov",
+    "name": "Samarkand Plov",
+    "category": "Mains",
+    "description": "Fragrant rice, carrots, lamb, beef and traditional spices",
+    "image": "plov.webp"
+  },
+  {
+    "id": "shepherd-s-fried-lamb-with-potatoes",
+    "name": "Shepherd’s Fried Lamb with Potatoes",
+    "category": "Mains",
+    "description": "Serves 3–4 people",
+    "image": ""
+  },
+  {
+    "id": "tabaka-oasis",
+    "name": "Tabaka Oasis",
+    "category": "Mains",
+    "description": "Marinated fried Cornish hen",
+    "image": ""
+  },
+  {
+    "id": "manti",
+    "name": "Manti",
+    "category": "Mains",
+    "description": "Four steamed dumplings with chopped beef and onions, pumpkin or potato",
+    "image": ""
+  },
+  {
+    "id": "crispy-manti",
+    "name": "Crispy Manti",
+    "category": "Mains",
+    "description": "Four pan-fried dumplings with chopped beef and onions",
+    "image": ""
+  },
+  {
+    "id": "homemade-beef-ravioli",
+    "name": "Homemade Beef Ravioli",
+    "category": "Mains",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "fried-ravioli-with-beef",
+    "name": "Fried Ravioli with Beef",
+    "category": "Mains",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "turkish-fried-liver",
+    "name": "Turkish Fried Liver",
+    "category": "Mains",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "tefteli",
+    "name": "Tefteli",
+    "category": "Mains",
+    "description": "Homemade lamb and beef meatballs and potatoes",
+    "image": ""
+  },
+  {
+    "id": "lamb",
+    "name": "Lamb",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "lamb-ribs",
+    "name": "Lamb Ribs",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "beef-tenderloin",
+    "name": "Beef Tenderloin",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "beef-roulade",
+    "name": "Beef Roulade",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "ground-beef",
+    "name": "Ground Beef",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "chicken-thighs",
+    "name": "Chicken Thighs",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "chicken-wings",
+    "name": "Chicken Wings",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "veal-liver",
+    "name": "Veal Liver",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "veggie-kebab",
+    "name": "Veggie Kebab",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "grilled-tomatoes",
+    "name": "Grilled Tomatoes",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "salmon-kebab",
+    "name": "Salmon Kebab",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "shrimp-kebab",
+    "name": "Shrimp Kebab",
+    "category": "Kebabs",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "lamb-chops",
+    "name": "Lamb Chops",
+    "category": "Kebabs",
+    "description": "Served with a side dish",
+    "image": ""
+  },
+  {
+    "id": "tandoori-samsa",
+    "name": "Tandoori Samsa",
+    "category": "Starters",
+    "description": "Crispy pastry stuffed with chopped beef and onions",
+    "image": "samsa.webp"
+  },
+  {
+    "id": "kutabi",
+    "name": "Kutabi",
+    "category": "Starters",
+    "description": "Thin dough pockets with beef, or herbs and cheese",
+    "image": ""
+  },
+  {
+    "id": "chebureki",
+    "name": "Chebureki",
+    "category": "Starters",
+    "description": "Deep-fried dough pockets stuffed with ground lamb and beef",
+    "image": ""
+  },
+  {
+    "id": "pickled-herring-with-potatoes",
+    "name": "Pickled Herring with Potatoes",
+    "category": "Starters",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "pickled-vegetables",
+    "name": "Pickled Vegetables",
+    "category": "Starters",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "sliced-beef-tongue",
+    "name": "Sliced Beef Tongue",
+    "category": "Starters",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "fresh-salad",
+    "name": "Fresh Salad",
+    "category": "Salads",
+    "description": "Tomatoes, cucumbers, onions, spring mix and herbs",
+    "image": ""
+  },
+  {
+    "id": "fresh-salad-with-avocado-and-feta-cheese",
+    "name": "Fresh Salad with Avocado and Feta Cheese",
+    "category": "Salads",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "achichuk",
+    "name": "Achichuk",
+    "category": "Salads",
+    "description": "Thinly sliced tomatoes, onions and herbs",
+    "image": ""
+  },
+  {
+    "id": "maraganda",
+    "name": "Maraganda",
+    "category": "Salads",
+    "description": "Greek salad topped with cured beef",
+    "image": ""
+  },
+  {
+    "id": "ru-mex",
+    "name": "Ru-Mex",
+    "category": "Salads",
+    "description": "Avocado, hard-boiled eggs, pickles and light mayonnaise",
+    "image": ""
+  },
+  {
+    "id": "eggplant-salad",
+    "name": "Eggplant Salad",
+    "category": "Salads",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "spring-salad",
+    "name": "Spring Salad",
+    "category": "Salads",
+    "description": "Beets, baby arugula, sunflower seeds, balsamic dressing and goat cheese",
+    "image": ""
+  },
+  {
+    "id": "asia",
+    "name": "Asia",
+    "category": "Salads",
+    "description": "Chicken breast, mushrooms, eggs, green onions and light mayonnaise",
+    "image": ""
+  },
+  {
+    "id": "nejnost",
+    "name": "Nejnost",
+    "category": "Salads",
+    "description": "Beef tongue strips, cucumbers, green peas, hard-boiled eggs and mayonnaise",
+    "image": ""
+  },
+  {
+    "id": "suzma",
+    "name": "Suzma",
+    "category": "Salads",
+    "description": "Sour yogurt, cucumbers, pickles and herbs",
+    "image": ""
+  },
+  {
+    "id": "smak",
+    "name": "Smak",
+    "category": "Salads",
+    "description": "Homemade seasoned croutons, tomato cubes, mozzarella and mayonnaise",
+    "image": ""
+  },
+  {
+    "id": "shurpa",
+    "name": "Shurpa",
+    "category": "Soups",
+    "description": "Traditional Uzbek lamb and beef soup with vegetables",
+    "image": ""
+  },
+  {
+    "id": "lagman",
+    "name": "Lagman",
+    "category": "Soups",
+    "description": "Homemade noodles, beef and vegetables",
+    "image": ""
+  },
+  {
+    "id": "kharcho",
+    "name": "Kharcho",
+    "category": "Soups",
+    "description": "Rice, beef and vegetables",
+    "image": ""
+  },
+  {
+    "id": "borscht",
+    "name": "Borscht",
+    "category": "Soups",
+    "description": "Beet, beef, cabbage and vegetable soup",
+    "image": ""
+  },
+  {
+    "id": "homemade-beef-ravioli-soup",
+    "name": "Homemade Beef Ravioli Soup",
+    "category": "Soups",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "lentil",
+    "name": "Lentil",
+    "category": "Soups",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "okroshka",
+    "name": "Okroshka",
+    "category": "Soups",
+    "description": "Seasonal yogurt soup with radishes, potatoes, hard-boiled eggs and boiled halal sausage",
+    "image": ""
+  },
+  {
+    "id": "garlic-butter-saut-ed-shrimp-and-vegetables",
+    "name": "Garlic Butter Sautéed Shrimp and Vegetables",
+    "category": "Seafood",
+    "description": "",
+    "image": "shrimp.webp"
+  },
+  {
+    "id": "bronzini-grilled",
+    "name": "Bronzini Grilled",
+    "category": "Seafood",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "homemade-potatoes-with-mushrooms",
+    "name": "Homemade Potatoes with Mushrooms",
+    "category": "Sides",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "hand-cut-french-fries",
+    "name": "Hand Cut French Fries",
+    "category": "Sides",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "rice",
+    "name": "Rice",
+    "category": "Sides",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "village-style-potatoes",
+    "name": "Village Style Potatoes",
+    "category": "Sides",
+    "description": "Yukon potatoes with garlic and dill",
+    "image": ""
+  },
+  {
+    "id": "baklava",
+    "name": "Baklava",
+    "category": "Desserts",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "napoleon",
+    "name": "Napoleon",
+    "category": "Desserts",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "honey-cake",
+    "name": "Honey Cake",
+    "category": "Desserts",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "ice-cream",
+    "name": "Ice Cream",
+    "category": "Desserts",
+    "description": "Vanilla or chocolate",
+    "image": ""
+  },
+  {
+    "id": "homemade-fruit-compote",
+    "name": "Homemade Fruit Compote",
+    "category": "Drinks",
+    "description": "Fruit punch · pitcher",
+    "image": ""
+  },
+  {
+    "id": "turshak-ob",
+    "name": "Turshak Ob",
+    "category": "Drinks",
+    "description": "Dried apricot punch · pitcher",
+    "image": ""
+  },
+  {
+    "id": "ayran",
+    "name": "Ayran",
+    "category": "Drinks",
+    "description": "Yogurt drink",
+    "image": ""
+  },
+  {
+    "id": "tarhun",
+    "name": "Tarhun",
+    "category": "Drinks",
+    "description": "Carbonated tarragon drink",
+    "image": ""
+  },
+  {
+    "id": "sodas",
+    "name": "Sodas",
+    "category": "Drinks",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "sparkling-water",
+    "name": "Sparkling Water",
+    "category": "Drinks",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "mexican-coke",
+    "name": "Mexican Coke",
+    "category": "Drinks",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "tea",
+    "name": "Tea",
+    "category": "Drinks",
+    "description": "Green or black",
+    "image": ""
+  },
+  {
+    "id": "black-tea-with-lemon-and-sugar",
+    "name": "Black Tea with Lemon and Sugar",
+    "category": "Drinks",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "turkish-coffee",
+    "name": "Turkish Coffee",
+    "category": "Drinks",
+    "description": "",
+    "image": ""
+  },
+  {
+    "id": "chalop",
+    "name": "Chalop",
+    "category": "Drinks",
+    "description": "Seasonal yogurt drink with sliced cucumbers, radishes and herbs",
+    "image": ""
+  },
+  {
+    "id": "plov-special",
+    "name": "Plov Special",
+    "category": "Lunch Specials",
+    "description": "Plov, tomato salad, ¼ bread and tea, soda or compote",
+    "image": ""
+  },
+  {
+    "id": "shish-kebab-special",
+    "name": "Shish Kebab Special",
+    "category": "Lunch Specials",
+    "description": "Two skewers, rice or fries, ¼ bread and a drink. Beef tenderloin or lamb ribs available",
+    "image": ""
+  },
+  {
+    "id": "soup-special",
+    "name": "Soup Special",
+    "category": "Lunch Specials",
+    "description": "Choice of soup, ¼ bread and a drink",
+    "image": ""
+  },
+  {
+    "id": "samsa-special",
+    "name": "Samsa Special",
+    "category": "Lunch Specials",
+    "description": "Four samsas and tea, soda or compote",
+    "image": ""
+  },
+  {
+    "id": "manti-special",
+    "name": "Manti Special",
+    "category": "Lunch Specials",
+    "description": "Meat, pumpkin or potato manti, ¼ bread and a drink",
+    "image": ""
+  }
+]

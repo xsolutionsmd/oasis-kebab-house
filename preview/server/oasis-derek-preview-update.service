@@ -1,0 +1,12 @@
+[Unit]
+Description=Apply and verify the published oasis-derek-preview application
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/oasis-derek-preview-update
+TimeoutStartSec=10min
+TimeoutStopSec=2min
+UMask=0077

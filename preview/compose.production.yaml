@@ -1,0 +1,21 @@
+name: oasis-derek-preview
+services:
+  web:
+    image: ${APP_IMAGE:?Set the approved immutable application image}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp, /data, /config]
+    mem_limit: 128m
+    pids_limit: 64
+    security_opt: [no-new-privileges:true]
+    networks:
+      proxy:
+        aliases: [oasis-derek-preview]
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "2"
+networks:
+  proxy:
+    external: true
+    name: xsolutions-proxy

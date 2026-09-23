@@ -1,0 +1,14 @@
+name: oasis-derek-preview-local
+services:
+  web:
+    image: caddy:2-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+    user: "10001:10001"
+    volumes:
+      - ./dist:/srv:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - "127.0.0.1:8942:8080"
+    read_only: true
+    tmpfs: [/tmp, /data, /config]
+    security_opt: [no-new-privileges:true]
