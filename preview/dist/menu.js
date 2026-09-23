@@ -157,5 +157,5 @@ fetch('menu.json')
 		renderMenu();
 	})
 	.catch(() => {
-		menuResults.textContent = 'Menu preview is temporarily unavailable.';
+		menuResults.textContent = 'The menu is temporarily unavailable.';
 	});

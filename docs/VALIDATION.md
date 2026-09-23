@@ -20,3 +20,7 @@ The later user correction supersedes read-only Viewer behavior above: Viewers ar
 Desktop homepage/menu/item dialog/checkout/gallery/visit and 390px mobile homepage/menu/checkout/reservation inspected. Mobile page widths375/375; all checkout/reservation fields fit their cards. Fixed a floated legend that initially pushed a required option beyond the item dialog; corrected dialog scrollWidth equals clientWidth640. Heading fonts are self-hosted. New plov dish image is a genuine8-second frame from the existing source video. No generated photos, competitor media or fabricated business details were shipped. The reference and Stitch evidence are recorded in DESIGN.md.
 
 Current changes use the existing unchanged stateful updater; no new infrastructure or migration. Live release evidence is maintained in the private client deployment record after the normal checked PR/main release completes.
+
+## Derek frontend preview — September 23 reservation/navigation refinement
+
+The independent derek-preview branch now includes the reservation design, shorter copy, corrected section navigation and removal of visible preview notices at Derek’s request. Local browser and static evidence, reference decisions and frontend-only constraints are in [RESERVATION_DESIGN.md](../preview/docs/RESERVATION_DESIGN.md). These checks concern the separate static preview, not the Flask backend or its production release.

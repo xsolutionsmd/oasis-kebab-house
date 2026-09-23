@@ -871,10 +871,13 @@ button {
 	min-height: 730px;
 }
 .visit-photo {
+	position: relative;
 	overflow: hidden;
 	min-height: 650px;
 }
 .visit-photo img {
+	position: absolute;
+	inset: 0;
 	object-position: 50% 47%;
 }
 .visit-panel {
@@ -913,6 +916,12 @@ button {
 	gap: 24px;
 	flex-wrap: wrap;
 	margin-top: 42px;
+}
+.visit-actions .inline-link {
+	color: var(--paper);
+}
+.visit-actions .inline-link:hover {
+	color: #dbad6c;
 }
 .visit-actions > span {
 	font-size: 12px;
@@ -1694,5 +1703,12 @@ button {
 	.gallery-tile:hover img,
 	.fire-images figure:hover img {
 		transform: none;
+	}
+}
+
+/* Keep Gallery photographs and their heading together on laptop displays. */
+@media (min-width: 851px) {
+	.gallery-grid {
+		height: clamp(340px, min(43vw, calc(100svh - 350px)), 660px);
 	}
 }

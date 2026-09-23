@@ -42,10 +42,8 @@ class Page(HTMLParser):
 
 def check() -> None:
     pages: dict[str, Page] = {}
-    for name in ("index.html", "menu.html"):
+    for name in ("index.html", "menu.html", "reserve.html"):
         source = (ROOT / name).read_text(encoding="utf-8")
-        assert "Design Preview" in source, name
-        assert "not connected" in source, name
         assert "/api/orders" not in source and "/api/reservations" not in source, name
         page = Page()
         page.feed(source)

@@ -17,11 +17,11 @@ The preview at `https://oasis-derek.xsolutionsmd.com` is a separate stateless co
 | Installed runtime | `/opt/oasis-derek-preview` |
 | Updater and state | `oasis-derek-preview-update.timer` / `/var/lib/oasis-derek-preview-deploy` |
 
-The preview workflow checks JavaScript, source links, content, image health, revision, menu, and noindex headers on a push or PR to `derek-preview`. Only a push to that exact branch publishes a digest-pinned image and manifest. The root-owned server updater independently reads that branch and exact prerelease; main and `dereks-dev` are ignored. The workflow waits for the same revision over public HTTPS before reporting success. An infrastructure change to the root-owned updater or gateway needs a reviewed reinstall; ordinary frontend pushes replace only the preview image.
+The preview workflow checks JavaScript, source links, content, image health, revision, menu/reservation pages, and noindex headers on a push or PR to `derek-preview`. Only a push to that exact branch publishes a digest-pinned image and manifest. The root-owned server updater independently reads that branch and exact prerelease; main and `dereks-dev` are ignored. The workflow waits for the same revision over public HTTPS before reporting success. An infrastructure change to the root-owned updater or gateway needs a reviewed reinstall; ordinary frontend pushes replace only the preview image.
 
 ## Local development
 
-From the repository root, `docker compose -f preview/compose.dev.yaml up -d` serves source-mounted edits at `http://127.0.0.1:8942/`. `docker compose -f preview/compose.dev.yaml down` stops only the local preview. Run `python preview/scripts/check_preview.py`, `node --check preview/dist/main.js`, and `node --check preview/dist/menu.js` before pushing. A production-like check is `docker build --build-arg REVISION=<40-hex-SHA> -t oasis-derek-preview-local preview`, followed by a read-only container probe of `/healthz`, `/version.json`, `/`, and `/menu.html`.
+From the repository root, `docker compose -f preview/compose.dev.yaml up -d` serves source-mounted edits at `http://127.0.0.1:8942/`. `docker compose -f preview/compose.dev.yaml down` stops only the local preview. Run `python preview/scripts/check_preview.py`, `node --check preview/dist/main.js`, `node --check preview/dist/motion.js`, `node --check preview/dist/menu.js`, and `node --check preview/dist/reserve.js` before pushing. A production-like check is `docker build --build-arg REVISION=<40-hex-SHA> -t oasis-derek-preview-local preview`, followed by a read-only container probe of `/healthz`, `/version.json`, `/`, and `/menu.html`.
 
 ## First server installation
 

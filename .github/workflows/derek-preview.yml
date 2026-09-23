@@ -21,6 +21,7 @@ jobs:
           node --check preview/dist/motion.js
           node --check preview/dist/main.js
           node --check preview/dist/menu.js
+          node --check preview/dist/reserve.js
           python3 preview/scripts/check_preview.py
       - name: Verify deployment image contract
         run: |
@@ -39,6 +40,8 @@ jobs:
           grep -q 'A taste of' candidate.html
           curl -fsS "http://127.0.0.1:$port/menu.html" -o candidate-menu.html
           grep -q 'The Oasis' candidate-menu.html
+          curl -fsS "http://127.0.0.1:$port/reserve.html" -o candidate-reserve.html
+          grep -q 'reservation-form' candidate-reserve.html
           [[ $(curl -fsSI "http://127.0.0.1:$port/" | tr -d '\r' | grep -i '^x-robots-tag:') == *noindex* ]]
   release:
     name: Publish and verify Oracle
@@ -150,6 +153,8 @@ jobs:
               grep -q 'A taste of' live.html
               curl -fsS --max-time 10 https://oasis-derek.xsolutionsmd.com/menu.html -o live-menu.html
               grep -q 'The Oasis' live-menu.html
+              curl -fsS --max-time 10 https://oasis-derek.xsolutionsmd.com/reserve.html -o live-reserve.html
+              grep -q 'reservation-form' live-reserve.html
               echo "Verified **$GITHUB_SHA** at https://oasis-derek.xsolutionsmd.com" >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi

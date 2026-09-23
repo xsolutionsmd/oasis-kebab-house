@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#f8f5ef" />
+		<meta
+			name="description"
+			content="Oasis Uzbek Kebab House in Pikesville, Maryland."
+		/>
+		<title>Reserve a Table — Oasis</title>
+		<link
+			rel="icon"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23165b72'/%3E%3Cpath d='M17 46V31c0-11 7-19 15-23 8 4 15 12 15 23v15H17Z' fill='none' stroke='%23b88942' stroke-width='3'/%3E%3Cpath d='M26 46V32a6 6 0 0 1 12 0v14' fill='none' stroke='%23f8f5ef' stroke-width='3'/%3E%3C/svg%3E"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=Oswald:wght@400;500&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="styles.css?v=5" />
+		<link rel="stylesheet" href="reserve.css?v=1" />
+		<script src="motion.js?v=5" defer></script>
+		<script src="main.js?v=4" defer></script>
+		<script src="reserve.js?v=1" defer></script>
+	</head>
+	<body class="reserve-page">
+		<a class="skip-link" href="#main">Skip to content</a>
+		<div class="scroll-progress" aria-hidden="true"><span></span></div>
+		<header class="site-header" id="top">
+			<a
+				class="brand"
+				href="index.html"
+				aria-label="Oasis Uzbek Kebab House, home"
+				><span class="brand-mark"
+					><img src="media/logo.png" alt="" width="110" height="90" /></span
+				><span class="brand-copy"
+					><strong>Oasis</strong><small>Uzbek Kebab House</small></span
+				></a
+			>
+			<nav class="desktop-nav" aria-label="Main navigation">
+				<a href="menu.html">Menu</a><a href="index.html#story">Our story</a
+				><a href="index.html#gallery">Gallery</a
+				><a href="index.html#visit">Visit</a>
+			</nav>
+			<div class="header-actions">
+				<a class="text-action" href="reserve.html" aria-current="page"
+					>Reserve a table</a
+				><a class="button button-blue" href="menu.html#all-dishes"
+					>Explore menu
+					<span aria-hidden="true"
+						><svg
+							class="arrow-icon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M5 19 19 5M5 5h14v14" /></svg></span
+				></a>
+			</div>
+			<button
+				class="menu-toggle"
+				type="button"
+				aria-label="Open menu"
+				aria-controls="mobile-nav"
+				aria-expanded="false"
+			>
+				<span></span><span></span>
+			</button>
+		</header>
+		<div class="mobile-nav-shell" hidden>
+			<nav
+				class="mobile-nav"
+				id="mobile-nav"
+				aria-label="Mobile navigation"
+				inert
+			>
+				<a href="index.html"
+					>Home
+					<span aria-hidden="true"
+						><svg
+							class="arrow-icon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M5 19 19 5M5 5h14v14" /></svg></span></a
+				><a href="menu.html#all-dishes"
+					>Menu
+					<span aria-hidden="true"
+						><svg
+							class="arrow-icon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M5 19 19 5M5 5h14v14" /></svg></span></a
+				><a href="index.html#story"
+					>Our story
+					<span aria-hidden="true"
+						><svg
+							class="arrow-icon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M5 19 19 5M5 5h14v14" /></svg></span></a
+				><a href="index.html#gallery"
+					>Gallery
+					<span aria-hidden="true"
+						><svg
+							class="arrow-icon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M5 19 19 5M5 5h14v14" /></svg></span></a
+				><a href="index.html#visit"
+					>Visit
+					<span aria-hidden="true"
+						><svg
+							class="arrow-icon"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path d="M5 19 19 5M5 5h14v14" /></svg></span
+				></a>
+				<a href="reserve.html"
+					>Reserve a table
+					<svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M5 19 19 5M5 5h14v14" /></svg
+				></a>
+			</nav>
+		</div>
+		<main id="main">
+			<section
+				class="reservation-layout section-wrap"
+				aria-labelledby="reserve-title"
+			>
+				<div class="reservation-welcome">
+					<p class="eyebrow">Pikesville, Maryland</p>
+					<h1 id="reserve-title">Reserve<br /><em>a table.</em></h1>
+					<p class="reservation-intro">
+						Choose your preferred date, time, and party size.
+					</p>
+				</div>
+				<div class="reservation-card">
+					<div class="reservation-card-heading"><h2>Your visit.</h2></div>
+					<form id="reservation-form" novalidate autocomplete="off">
+						<fieldset id="reservation-fields" disabled>
+							<legend class="sr-only">Table request details</legend>
+							<p class="field-guidance">
+								All fields are required unless marked optional.
+							</p>
+							<div class="reservation-group">
+								<h3>Visit details</h3>
+								<div class="reservation-fields">
+									<div class="reservation-field">
+										<label for="reserve-date">Preferred date</label
+										><input
+											id="reserve-date"
+											name="date"
+											type="date"
+											required
+											aria-describedby="date-error"
+										/><span id="date-error" class="field-error"></span>
+									</div>
+									<div class="reservation-field">
+										<label for="reserve-time">Preferred time</label
+										><input
+											id="reserve-time"
+											name="time"
+											type="time"
+											required
+											aria-describedby="time-error"
+										/><span id="time-error" class="field-error"></span>
+									</div>
+									<div class="reservation-field field-full">
+										<label for="reserve-guests">Number of guests</label
+										><input
+											id="reserve-guests"
+											name="guests"
+											type="number"
+											min="1"
+											step="1"
+											inputmode="numeric"
+											value="2"
+											required
+											aria-describedby="guests-error"
+										/><span id="guests-error" class="field-error"></span>
+									</div>
+								</div>
+							</div>
+							<div class="reservation-group">
+								<h3>Your details</h3>
+								<div class="reservation-fields">
+									<div class="reservation-field field-full">
+										<label for="reserve-name">Full name</label
+										><input
+											id="reserve-name"
+											name="name"
+											type="text"
+											maxlength="100"
+											required
+											aria-describedby="name-error"
+										/><span id="name-error" class="field-error"></span>
+									</div>
+									<div class="reservation-field field-full">
+										<label for="reserve-email">Email address</label
+										><input
+											id="reserve-email"
+											name="email"
+											type="email"
+											maxlength="254"
+											required
+											aria-describedby="email-error"
+										/><span id="email-error" class="field-error"></span>
+									</div>
+									<div class="reservation-field field-full">
+										<label for="reserve-phone">Phone number</label
+										><input
+											id="reserve-phone"
+											name="phone"
+											type="tel"
+											maxlength="40"
+											required
+											aria-describedby="phone-error"
+										/><span id="phone-error" class="field-error"></span>
+									</div>
+								</div>
+							</div>
+							<div class="reservation-group">
+								<label for="reserve-notes"
+									>Anything we should know?
+									<span class="optional-label">(optional)</span></label
+								><textarea
+									id="reserve-notes"
+									name="notes"
+									rows="3"
+									maxlength="1000"
+									placeholder="Special requests or accessibility needs"
+								></textarea>
+							</div>
+							<p
+								id="reservation-status"
+								class="reservation-status"
+								role="status"
+								aria-live="polite"
+							></p>
+							<button
+								class="button button-blue reservation-submit"
+								type="submit"
+							>
+								Review request
+								<svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+									<path d="M5 19 19 5M5 5h14v14" />
+								</svg>
+							</button>
+						</fieldset>
+					</form>
+					<noscript
+						><p>
+							This form needs JavaScript. To arrange a visit, call
+							<a href="tel:+14107779700">410-777-9700</a>.
+						</p></noscript
+					>
+				</div>
+				<div class="reservation-atmosphere">
+					<figure class="reservation-photo">
+						<img
+							src="media/interior.webp"
+							alt="The dining room at Oasis, with its patterned wooden screens"
+							width="1080"
+							height="1920"
+						/>
+						<figcaption>Inside Oasis.</figcaption>
+					</figure>
+					<div class="reservation-contact">
+						<div>
+							<p class="eyebrow">Find us</p>
+							<p>1430 Reisterstown Rd<br />Pikesville, MD 21208</p>
+						</div>
+						<div>
+							<p class="eyebrow">Prefer to call?</p>
+							<a href="tel:+14107779700">410-777-9700</a>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer class="site-footer">
+			<div class="footer-top">
+				<div>
+					<a class="footer-brand" href="index.html">Oasis</a>
+					<p>Uzbek Kebab House<br />Pikesville, Maryland</p>
+				</div>
+				<nav aria-label="Footer navigation">
+					<a href="menu.html">Menu</a><a href="index.html#story">Our story</a
+					><a href="index.html#gallery">Gallery</a
+					><a href="index.html#visit">Visit</a>
+					<a href="reserve.html">Reserve a table</a>
+				</nav>
+				<div class="footer-contact">
+					<span>Come gather around</span
+					><a href="tel:+14107779700">410-777-9700</a
+					><a
+						href="https://www.google.com/maps/search/?api=1&amp;query=Oasis+Uzbek+Kebab+House+1430+Reisterstown+Rd+Pikesville+MD+21208"
+						target="_blank"
+						rel="noopener noreferrer"
+						>1430 Reisterstown Rd, Pikesville, MD</a
+					>
+				</div>
+			</div>
+			<div class="footer-bottom">
+				<span>© <span id="year">2026</span> Oasis Uzbek Kebab House</span>
+			</div>
+		</footer>
+		<dialog
+			class="reservation-dialog"
+			id="reservation-review"
+			aria-labelledby="review-title"
+		>
+			<button
+				class="dialog-close"
+				type="button"
+				aria-label="Close table request"
+			>
+				×
+			</button>
+			<div class="reservation-review-body">
+				<p class="eyebrow">Review your details</p>
+				<h2 id="review-title">Your table<br /><em>request.</em></h2>
+				<dl id="request-summary"></dl>
+				<div class="reservation-review-actions">
+					<button class="button button-blue" type="button" data-close>
+						Edit your details</button
+					><a class="inline-link" href="tel:+14107779700"
+						>Call the restaurant</a
+					>
+				</div>
+			</div>
+		</dialog>
+	</body>
+</html>

@@ -57,7 +57,7 @@ window.OasisMotion = (() => {
 		document.documentElement.classList.remove('anchor-gliding');
 	}
 
-	function scrollToTarget(target, { focus = true } = {}) {
+	function scrollToTarget(target, { focus = true, immediate = false } = {}) {
 		stopScroll();
 		const sequence = scrollSequence;
 		target.classList.add('is-visible');
@@ -68,14 +68,20 @@ window.OasisMotion = (() => {
 			image.loading = 'eager';
 		});
 		const start = window.scrollY;
-		const offset = header.getBoundingClientRect().height + 20;
+		const landing = target.querySelector('[data-anchor-content]') || target;
+		// Measure layout, not the temporary transform of an entering reveal.
+		let landingTop = 0;
+		for (let element = landing; element; element = element.offsetParent)
+			landingTop += element.offsetTop;
+		const offset =
+			header.getBoundingClientRect().height + (landing === target ? 20 : 32);
 		const destination =
 			target.id === 'top'
 				? 0
 				: Math.max(
 						0,
 						Math.min(
-							start + target.getBoundingClientRect().top - offset,
+							landingTop - offset,
 							document.documentElement.scrollHeight - innerHeight,
 						),
 					);
@@ -84,7 +90,7 @@ window.OasisMotion = (() => {
 			document.documentElement.classList.remove('anchor-gliding');
 			if (focus) focusWithoutScroll(target);
 		};
-		if (preference.matches || Math.abs(distance) < 4) {
+		if (immediate || preference.matches || Math.abs(distance) < 4) {
 			window.scrollTo({ top: destination, behavior: 'instant' });
 			finish();
 			return;
@@ -125,6 +131,27 @@ window.OasisMotion = (() => {
 			stopScroll();
 	});
 	window.addEventListener('popstate', stopScroll);
+
+	// Cross-page links use the same framing once fonts and images have settled.
+	// Never take the scroll position back after the visitor starts interacting.
+	const initialScrollSequence = scrollSequence;
+	window.addEventListener(
+		'load',
+		async () => {
+			await document.fonts.ready;
+			if (!location.hash || scrollSequence !== initialScrollSequence) return;
+			let target;
+			try {
+				target = document.getElementById(
+					decodeURIComponent(location.hash.slice(1)),
+				);
+			} catch {
+				return;
+			}
+			if (target) scrollToTarget(target, { focus: false, immediate: true });
+		},
+		{ once: true },
+	);
 
 	async function setMenu(open, { immediate = false } = {}) {
 		const sequence = ++menuSequence;
