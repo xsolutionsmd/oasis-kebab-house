@@ -69,7 +69,7 @@ window.OasisMotion = (() => {
 		});
 		const start = window.scrollY;
 		const landing =
-			(target.matches('section') &&
+			(target.matches('section, .menu-experience') &&
 				target.querySelector('[data-anchor-content]')) ||
 			target;
 		// Measure layout, not the temporary transform of an entering reveal.
