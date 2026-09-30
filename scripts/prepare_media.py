@@ -18,7 +18,7 @@ records.append(dict(file='logo.png',source='https://oasiskebabhouse.com/',transf
 video=source/'plov-original.mp4'
 if video.exists() and video.stat().st_size>17000000:
     ffmpeg=shutil.which('ffmpeg') or 'C:/ffmpeg/bin/ffmpeg.exe'
-    subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','4','-i',str(video),'-t','28','-an','-vf','crop=720:990:0:0,scale=720:-2,fps=24','-c:v','libx264','-crf','27','-preset','medium','-movflags','+faststart','-y',str(target/'plov.mp4')],check=True)
+    subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','4','-i',str(video),'-t','28','-an','-vf','crop=720:990:0:0,scale=720:-2,fps=24','-c:v','libx264','-crf','28','-preset','medium','-movflags','+faststart','-y',str(target/'plov.mp4')],check=True)
     subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','12','-i',str(video),'-vf','crop=720:990:0:0','-frames:v','1','-quality','90','-y',str(target/'plov.webp')],check=True)
     subprocess.run([ffmpeg,'-hide_banner','-loglevel','error','-ss','8','-i',str(video),'-vf','crop=720:990:0:0','-frames:v','1','-quality','90','-y',str(target/'plov-dish.webp')],check=True)
     records=[r for r in records if r['file']!='plov.webp']
