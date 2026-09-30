@@ -119,7 +119,7 @@ function updateOrderSummaries() {
 /* ---------- Shared bits ---------- */
 function demoNote() { return config.demo ? '<p class="demo-note">Website preview — orders and table requests here are tests and are not sent to the kitchen.</p>' : ''; }
 function head(title, kicker = 'Oasis Uzbek Kebab House', description = '') {
-  return `<header class="page-head"><p class="eyebrow">${esc(kicker)}</p><h1>${esc(title)}</h1>${description ? `<p class="lede">${esc(description)}</p>` : ''}</header>`;
+  return `<header class="page-head"><h1>${esc(title)}</h1>${description ? `<p class="lede">${esc(description)}</p>` : ''}</header>`;
 }
 function addButton(i) {
   return `<button class="add-button" type="button" data-add="${i.id}" aria-label="Add ${esc(i.name)} to order" ${i.available ? '' : 'disabled'}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>`;
@@ -136,9 +136,8 @@ function home() {
   <section class="hero" aria-label="Welcome to Oasis">
     <div class="hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow">Halal Uzbek kitchen · Pikesville, Maryland</p>
-        <h1>A taste of Uzbekistan<em>on Reisterstown Road.</em></h1>
-        <p class="lede">Samarkand plov from the kazan, kebabs over charcoal and samsa baked in the tandoor.</p>
+        <h1>Oasis Uzbek Kebab House</h1>
+        <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
         <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
       </div>
       <figure class="hero-media">
@@ -149,17 +148,9 @@ function home() {
   </section>
   <section class="band band-sand">
     <div class="section">
-      <div class="section-heading"><div><p class="eyebrow">Signature dishes</p><h2>Start with the classics</h2></div><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
+      <div class="section-heading"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
       <div class="dish-grid">${signature.map(dishCard).join('')}</div>
     </div>
-  </section>
-  <section class="section story">
-    <div class="story-media"><img class="story-main" src="${media('interior.webp')}" alt="The Oasis dining room with carved Uzbek screens" loading="lazy"><img class="story-inset" src="${media('bread.webp')}" alt="Fresh tandoor bread" loading="lazy"></div>
-    <div class="story-copy"><p class="eyebrow">Our table</p><h2>Uzbek hospitality, made the traditional way.</h2><p>Lamb and rice slow-cooked in a cast-iron kazan. Skewers turned over open coals. Bread and samsa baked against the walls of a clay tandoor. Come in for a long lunch, or gather the family for dinner.</p><div class="hero-actions"><a class="button" href="/reserve">Reserve a table</a></div></div>
-  </section>
-  <section class="section">
-    <div class="section-heading"><div><p class="eyebrow">Gallery</p><h2>A glimpse of Oasis</h2></div><a class="text-link" href="/gallery">See all ${arrow}</a></div>
-    <div class="mosaic">${[6, 0, 4, 7, 2].map(n => { const [img, label] = galleries[n]; return `<button type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"></button>`; }).join('')}</div>
   </section>`;
   const video = $('#hero-video'), toggle = $('#video-toggle');
   const update = () => { toggle.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video'); toggle.innerHTML = video.paused ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>' : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'; };
@@ -176,7 +167,7 @@ function menuPage() {
   const categories = [...new Set(items.map(i => i.category))];
   const closed = !config.settings.accept_orders;
   $('#main').innerHTML = `
-  <div class="menu-top"><div><p class="eyebrow">Pickup · Pay in store</p><h1>Menu</h1></div></div>
+  <div class="menu-top"><h1>Menu</h1></div>
   ${closed ? '<p class="notice">Online pickup orders are paused right now. Please call <a href="' + TEL + '">' + PHONE + '</a>.</p>' : ''}
   <div class="menu-tools"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
   <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav></div>
@@ -255,11 +246,6 @@ function visit() {
   <div class="visit-panel">
     <div class="visit-block"><h2>Find us</h2><p>1430 Reisterstown Rd<br>Pikesville, MD 21208</p><div class="hero-actions"><a class="button primary" href="${maps}" target="_blank" rel="noreferrer">Get directions ${arrow}</a><a class="button" href="${TEL}">Call ${PHONE}</a></div></div>
     <div class="visit-block"><h2>Opening hours</h2><p class="visit-status">${esc(openState().text)}</p>${hoursRows()}<p class="help">Call ahead for holiday hours.</p></div>
-    <div class="visit-block faq"><h2>Good to know</h2>
-      <details><summary>How does pickup work?</summary><p>Add dishes to your order, choose a pickup time and enter your details. We’ll confirm, then you pay at the counter when you collect.</p></details>
-      <details><summary>Can I reserve a table?</summary><p>Yes — <a href="/reserve">request a table</a> for up to ${config.settings.max_party} guests. It’s booked once the restaurant confirms. For larger groups, please call.</p></details>
-      <details><summary>Allergies or dietary needs?</summary><p>Call <a href="${TEL}">${PHONE}</a> before ordering so the kitchen can help.</p></details>
-    </div>
   </div></div>`;
 }
 
@@ -308,7 +294,7 @@ async function loadSlots(reserve, auto = false) {
 }
 function reservation() {
   const max = config.settings.max_party;
-  $('#main').innerHTML = head('Reserve a table', 'Reservations', 'Choose a day and time — we’ll confirm your table by email.') + `<div class="page-content">${demoNote()}<div class="booking-layout">
+  $('#main').innerHTML = head('Reserve a table') + `<div class="page-content">${demoNote()}<div class="booking-layout">
   <form class="form-card" id="request-form" novalidate>
     ${config.settings.accept_reservations ? '' : `<p class="notice">Online table requests are paused. Please call <a href="${TEL}">${PHONE}</a>.</p>`}
     <div class="form-step"><h2><span>1</span>Party size</h2><div class="chips guest-chips">${Array.from({ length: max }, (_, n) => `<label class="chip"><input type="radio" name="guests" value="${n + 1}" ${n === 1 ? 'checked' : ''}><span>${n + 1}</span></label>`).join('')}</div><p class="help">More than ${max} guests? Call <a href="${TEL}">${PHONE}</a>.</p></div>
@@ -318,7 +304,6 @@ function reservation() {
     <button class="button primary block" type="submit">Request table ${arrow}</button>
     <p class="help">Your table is held once the restaurant confirms. <a href="/privacy">Privacy</a></p>
   </form>
-  <aside class="booking-aside"><img src="${media('patio.webp')}" alt="Tables set on the Oasis patio" loading="lazy"><div><h3>Good to know</h3><p>Tables are held for about ${config.settings.reservation_duration} minutes. Walk-ins are always welcome.</p><p><a href="/visit">Hours &amp; directions</a></p></div></aside>
   </div></div>`;
   wireRequest(true);
 }
