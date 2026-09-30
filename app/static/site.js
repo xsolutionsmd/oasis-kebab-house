@@ -61,9 +61,8 @@ function hoursRows() {
   return rows.map(r => `<div class="hours-row${r.today ? ' today' : ''}"><span>${DAYS[r.start]}${r.end > r.start ? ' – ' + DAYS[r.end] : ''}</span><span>${r.label}</span></div>`).join('');
 }
 function renderChrome() {
-  const s = openState(), el = $('#open-status');
-  el.hidden = false; el.className = 'open-status' + (s.open ? ' is-open' : ''); el.textContent = s.text;
-  $('#footer-hours').innerHTML = hoursRows();
+  // The visit page lists hours itself; don't repeat them in its footer.
+  if (location.pathname === '/visit') $('#footer-hours').parentElement.hidden = true; else $('#footer-hours').innerHTML = hoursRows();
 }
 
 /* ---------- Bag ---------- */
@@ -93,7 +92,7 @@ function addLine(i, quantity = 1, choices = {}) {
 }
 function totalHTML() {
   const t = totals();
-  return `<div class="totals">${t.tax ? `<div class="total-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div><div class="total-line"><span>Tax</span><span>${money(t.tax)}</span></div>` : ''}<div class="total-line total"><span>Total</span><span>${money(t.total)}</span></div><p class="help">Pay at the counter when you pick up.</p></div>`;
+  return `<div class="totals">${t.tax ? `<div class="total-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div><div class="total-line"><span>Tax</span><span>${money(t.tax)}</span></div>` : ''}<div class="total-line total"><span>Total</span><span>${money(t.total)}</span></div></div>`;
 }
 function bagHTML() {
   if (!bag.length) return '<div class="empty-bag"><p>Your order is empty.</p><p class="help">Add a few dishes from the menu to get started.</p></div>';
@@ -106,7 +105,7 @@ function openBag() {
   $('#bag-content').innerHTML = `<div class="drawer-body">${pickupNote()}${bagHTML()}</div><div class="drawer-foot">${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : `<a class="button primary block" href="/menu">Browse the menu ${arrow}</a>`}</div>`;
   if (!$('#bag-dialog').open) $('#bag-dialog').showModal();
 }
-function pickupNote() { return `<p class="pickup-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>Pickup at 1430 Reisterstown Rd · ready in about ${config.settings.pickup_lead} min</span></p>`; }
+function pickupNote() { return `<p class="pickup-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>Pickup at 1430 Reisterstown Rd · ready in about ${config.settings.pickup_lead} min · pay in store</span></p>`; }
 function updateOrderSummaries() {
   const count = bagCount(), bar = $('#order-bar');
   if (bar) { bar.hidden = !count; bar.innerHTML = `<span class="order-bar-count">${count}</span><strong>View order</strong><span>${money(totals().total)}</span>`; }
@@ -130,37 +129,17 @@ function dishCard(i) {
 }
 
 /* ---------- Home ---------- */
-// Paints a tiny copy of the hero video into a canvas that CSS blurs into a full-width, moving
-// backdrop, so the real video can be shown whole (never cropped) without empty side bars.
-function ambient(video, canvas) {
-  const ctx = canvas.getContext('2d');
-  let last = 0;
-  const paint = () => { try { ctx.drawImage(video, 0, 0, canvas.width, canvas.height); } catch {} };
-  const loop = t => {
-    if (!document.body.contains(video)) return;
-    if (t - last > 90 && !video.paused) { paint(); last = t; }
-    requestAnimationFrame(loop);
-  };
-  const poster = new Image();
-  poster.onload = () => { if (video.readyState < 2) ctx.drawImage(poster, 0, 0, canvas.width, canvas.height); };
-  poster.src = video.poster;
-  video.addEventListener('loadeddata', paint);
-  video.addEventListener('seeked', paint);
-  requestAnimationFrame(loop);
-}
 function home() {
   document.body.classList.add('home');
   const signature = items.filter(i => i.image);
   $('#main').innerHTML = `
   <section class="hero" aria-label="Welcome to Oasis">
-    <canvas class="hero-ambient" id="hero-ambient" width="36" height="50" aria-hidden="true"></canvas>
     <div class="hero-inner">
       <div class="hero-copy">
         <p class="eyebrow">Halal Uzbek kitchen · Pikesville, Maryland</p>
         <h1>A taste of Uzbekistan<em>on Reisterstown Road.</em></h1>
         <p class="lede">Samarkand plov from the kazan, kebabs over charcoal and samsa baked in the tandoor.</p>
         <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
-        <dl class="hero-facts"><div><dt>Hours</dt><dd id="hero-hours"></dd></div><div><dt>Pickup</dt><dd>Ready in ~${config.settings.pickup_lead} min</dd></div><div><dt>Call</dt><dd><a href="${TEL}">${PHONE}</a></dd></div></dl>
       </div>
       <figure class="hero-media">
         <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
@@ -174,32 +153,15 @@ function home() {
       <div class="dish-grid">${signature.map(dishCard).join('')}</div>
     </div>
   </section>
-  <section class="band band-blue" aria-labelledby="steps-title">
-    <div class="section steps-section">
-      <h2 id="steps-title">Pickup in three steps</h2>
-      <ol class="steps"><li><span>1</span><h3>Choose your dishes</h3><p>Browse the menu and add to your order.</p></li><li><span>2</span><h3>Pick a time</h3><p>Today or up to ${config.settings.advance_days} days ahead.</p></li><li><span>3</span><h3>Pay at pickup</h3><p>No card online. We’ll confirm by email.</p></li></ol>
-      <a class="button saffron" href="/menu">Start your order ${arrow}</a>
-    </div>
-  </section>
   <section class="section story">
     <div class="story-media"><img class="story-main" src="${media('interior.webp')}" alt="The Oasis dining room with carved Uzbek screens" loading="lazy"><img class="story-inset" src="${media('bread.webp')}" alt="Fresh tandoor bread" loading="lazy"></div>
-    <div class="story-copy"><p class="eyebrow">Our table</p><h2>Uzbek hospitality, made the traditional way.</h2><p>Lamb and rice slow-cooked in a cast-iron kazan. Skewers turned over open coals. Bread and samsa baked against the walls of a clay tandoor. Come in for a long lunch, or gather the family for dinner.</p><div class="hero-actions"><a class="button" href="/reserve">Reserve a table</a><a class="text-link" href="/visit">Hours &amp; directions ${arrow}</a></div></div>
+    <div class="story-copy"><p class="eyebrow">Our table</p><h2>Uzbek hospitality, made the traditional way.</h2><p>Lamb and rice slow-cooked in a cast-iron kazan. Skewers turned over open coals. Bread and samsa baked against the walls of a clay tandoor. Come in for a long lunch, or gather the family for dinner.</p><div class="hero-actions"><a class="button" href="/reserve">Reserve a table</a></div></div>
   </section>
   <section class="section">
     <div class="section-heading"><div><p class="eyebrow">Gallery</p><h2>A glimpse of Oasis</h2></div><a class="text-link" href="/gallery">See all ${arrow}</a></div>
     <div class="mosaic">${[6, 0, 4, 7, 2].map(n => { const [img, label] = galleries[n]; return `<button type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"></button>`; }).join('')}</div>
-  </section>
-  <section class="visit-band">
-    <div class="visit-band-inner">
-      <div><p class="eyebrow">Visit us</p><h2>1430 Reisterstown Rd<br>Pikesville, MD 21208</h2><p class="visit-status" id="visit-status"></p><div class="hero-actions"><a class="button light" href="${maps}" target="_blank" rel="noreferrer">Get directions ${arrow}</a><a class="button ghost" href="${TEL}">Call ${PHONE}</a></div></div>
-      <div class="hours-card"><h3>Opening hours</h3>${hoursRows()}<p class="help">Call ahead for holiday hours.</p></div>
-    </div>
   </section>`;
-  const state = openState();
-  $('#hero-hours').textContent = state.text;
-  $('#visit-status').textContent = state.text;
   const video = $('#hero-video'), toggle = $('#video-toggle');
-  ambient(video, $('#hero-ambient'));
   const update = () => { toggle.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video'); toggle.innerHTML = video.paused ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>' : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'; };
   video.addEventListener('play', update); video.addEventListener('pause', update);
   toggle.addEventListener('click', () => video.paused ? video.play().catch(() => toast('The video is unavailable.')) : video.pause());
@@ -214,7 +176,7 @@ function menuPage() {
   const categories = [...new Set(items.map(i => i.category))];
   const closed = !config.settings.accept_orders;
   $('#main').innerHTML = `
-  <div class="menu-top"><div><p class="eyebrow">Pickup · Pay in store</p><h1>Menu</h1></div><p class="menu-meta"><span>${esc(openState().text)}</span><span>Ready in about ${config.settings.pickup_lead} min</span><a href="/visit">1430 Reisterstown Rd</a></p></div>
+  <div class="menu-top"><div><p class="eyebrow">Pickup · Pay in store</p><h1>Menu</h1></div></div>
   ${closed ? '<p class="notice">Online pickup orders are paused right now. Please call <a href="' + TEL + '">' + PHONE + '</a>.</p>' : ''}
   <div class="menu-tools"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
   <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav></div>
