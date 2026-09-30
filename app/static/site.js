@@ -130,31 +130,56 @@ function dishCard(i) {
 }
 
 /* ---------- Home ---------- */
+// Paints a tiny copy of the hero video into a canvas that CSS blurs into a full-width, moving
+// backdrop, so the real video can be shown whole (never cropped) without empty side bars.
+function ambient(video, canvas) {
+  const ctx = canvas.getContext('2d');
+  let last = 0;
+  const paint = () => { try { ctx.drawImage(video, 0, 0, canvas.width, canvas.height); } catch {} };
+  const loop = t => {
+    if (!document.body.contains(video)) return;
+    if (t - last > 90 && !video.paused) { paint(); last = t; }
+    requestAnimationFrame(loop);
+  };
+  const poster = new Image();
+  poster.onload = () => { if (video.readyState < 2) ctx.drawImage(poster, 0, 0, canvas.width, canvas.height); };
+  poster.src = video.poster;
+  video.addEventListener('loadeddata', paint);
+  video.addEventListener('seeked', paint);
+  requestAnimationFrame(loop);
+}
 function home() {
   document.body.classList.add('home');
   const signature = items.filter(i => i.image);
   $('#main').innerHTML = `
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">Halal Uzbek kitchen · Pikesville, Maryland</p>
-      <h1>A taste of Uzbekistan<em>on Reisterstown Road.</em></h1>
-      <p class="lede">Samarkand plov from the kazan, kebabs over charcoal and samsa baked in the tandoor.</p>
-      <div class="hero-actions"><a class="button primary" href="/menu">Order pickup ${arrow}</a><a class="button" href="/reserve">Reserve a table</a></div>
-      <dl class="hero-facts"><div><dt>Hours</dt><dd id="hero-hours"></dd></div><div><dt>Pickup</dt><dd>Ready in ~${config.settings.pickup_lead} min</dd></div><div><dt>Call</dt><dd><a href="${TEL}">${PHONE}</a></dd></div></dl>
+  <section class="hero" aria-label="Welcome to Oasis">
+    <canvas class="hero-ambient" id="hero-ambient" width="36" height="50" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Halal Uzbek kitchen · Pikesville, Maryland</p>
+        <h1>A taste of Uzbekistan<em>on Reisterstown Road.</em></h1>
+        <p class="lede">Samarkand plov from the kazan, kebabs over charcoal and samsa baked in the tandoor.</p>
+        <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
+        <dl class="hero-facts"><div><dt>Hours</dt><dd id="hero-hours"></dd></div><div><dt>Pickup</dt><dd>Ready in ~${config.settings.pickup_lead} min</dd></div><div><dt>Call</dt><dd><a href="${TEL}">${PHONE}</a></dd></div></dl>
+      </div>
+      <figure class="hero-media">
+        <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
+        <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
+      </figure>
     </div>
-    <figure class="hero-media">
-      <video id="hero-video" muted loop playsinline preload="metadata" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
-      <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
-      <figcaption>Plov, served from the kazan</figcaption>
-    </figure>
   </section>
-  <section class="section">
-    <div class="section-heading"><div><p class="eyebrow">Signature dishes</p><h2>Start with the classics</h2></div><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
-    <div class="dish-grid">${signature.map(dishCard).join('')}</div>
+  <section class="band band-sand">
+    <div class="section">
+      <div class="section-heading"><div><p class="eyebrow">Signature dishes</p><h2>Start with the classics</h2></div><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
+      <div class="dish-grid">${signature.map(dishCard).join('')}</div>
+    </div>
   </section>
-  <section class="section steps-section" aria-labelledby="steps-title">
-    <h2 id="steps-title" class="visually-hidden">How pickup works</h2>
-    <ol class="steps"><li><span>1</span><h3>Choose your dishes</h3><p>Browse the menu and add to your order.</p></li><li><span>2</span><h3>Pick a time</h3><p>Today or up to ${config.settings.advance_days} days ahead.</p></li><li><span>3</span><h3>Pay at pickup</h3><p>No card online. We’ll confirm by email.</p></li></ol>
+  <section class="band band-blue" aria-labelledby="steps-title">
+    <div class="section steps-section">
+      <h2 id="steps-title">Pickup in three steps</h2>
+      <ol class="steps"><li><span>1</span><h3>Choose your dishes</h3><p>Browse the menu and add to your order.</p></li><li><span>2</span><h3>Pick a time</h3><p>Today or up to ${config.settings.advance_days} days ahead.</p></li><li><span>3</span><h3>Pay at pickup</h3><p>No card online. We’ll confirm by email.</p></li></ol>
+      <a class="button saffron" href="/menu">Start your order ${arrow}</a>
+    </div>
   </section>
   <section class="section story">
     <div class="story-media"><img class="story-main" src="${media('interior.webp')}" alt="The Oasis dining room with carved Uzbek screens" loading="lazy"><img class="story-inset" src="${media('bread.webp')}" alt="Fresh tandoor bread" loading="lazy"></div>
@@ -174,6 +199,7 @@ function home() {
   $('#hero-hours').textContent = state.text;
   $('#visit-status').textContent = state.text;
   const video = $('#hero-video'), toggle = $('#video-toggle');
+  ambient(video, $('#hero-ambient'));
   const update = () => { toggle.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video'); toggle.innerHTML = video.paused ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>' : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'; };
   video.addEventListener('play', update); video.addEventListener('pause', update);
   toggle.addEventListener('click', () => video.paused ? video.play().catch(() => toast('The video is unavailable.')) : video.pause());
