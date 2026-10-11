@@ -8,6 +8,10 @@ Install Docker Desktop and Python 3. Run `./app.ps1 start` on Windows or `./star
 
 Develop on `dev`; checked `main` releases publish immutable multi-architecture containers and the independent Oracle updater applies them. The live demonstration is https://oasis.xsolutionsmd.com. Noindex remains enabled, and orders/reservations are clearly marked as demonstrations until operating settings have been confirmed and `DEMO_MODE=false` is explicitly configured.
 
+## Abdul's development preview
+
+Work on `abdul-dev`, branched from `main`. Every push runs checks and automatically deploys only https://oasis-abdul-dev.xsolutionsmd.com. The preview has separate test data, keys, email setup, container and release history. The main Oasis site stays on `main`. See [Abdul's workflow](docs/ABDUL_DEV.md) for setup, review and promotion.
+
 ## Application
 
 Python 3.12, Flask, SQLite WAL and a small dependency-free browser interface. One Gunicorn worker with four request threads and a serialized email outbox worker. Price calculations, item availability, pickup notice, opening hours, reservation capacity and member permissions are validated on the server. Persistent data and encryption keys live outside the image in `/data`.

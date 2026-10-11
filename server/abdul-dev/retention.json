@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "oasis-abdul-dev",
+  "project": "oasis-abdul-dev",
+  "source": "https://github.com/xsolutionsmd/oasis-kebab-house",
+  "repositories": {
+    "image": "ghcr.io/xsolutionsmd/oasis-kebab-house-abdul-dev"
+  },
+  "state_dir": "/var/lib/oasis-abdul-dev-deploy",
+  "current": "current.json",
+  "recovery_files": [
+    "previous.env",
+    "previous-current.json"
+  ],
+  "pending_globs": [
+    "transaction",
+    "transaction.json",
+    "transaction.json.new",
+    "check.*",
+    "check-*"
+  ],
+  "keep_previous": 2,
+  "minimum_age_hours": 24
+}

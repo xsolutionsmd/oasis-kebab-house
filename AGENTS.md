@@ -24,3 +24,7 @@ is selected, verify a connected session before claiming observations.
 Record genuine failures and unknown observations; a missing connection is not a pass.
 Keep context caches, runtime recordings, credentials and developer tooling out of
 production images. Separate local, container, CI and live evidence in the validation record.
+
+## Abdul's preview branch
+
+`abdul-dev` is a long-lived development branch created from main. Pushes automatically test and deploy ONLY https://oasis-abdul-dev.xsolutionsmd.com using `.github/workflows/abdul-dev.yml`. It has separate data, OAuth credentials, keys, image package and root-owned updater. Follow docs/ABDUL_DEV.md. Work intended for Abdul's environment stays on this branch; do not switch it to dev or merge main without the user's release authorization. Promoting approved changes uses a checked PR into main. Preserve both publisher branch restrictions and the main-only production environment. Never copy main data/sender tokens into this preview.

@@ -1,0 +1,3 @@
+oasis-abdul-dev.xsolutionsmd.com {
+    reverse_proxy oasis-abdul-dev-app:8080
+}

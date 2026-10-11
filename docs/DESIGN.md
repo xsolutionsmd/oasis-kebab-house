@@ -1,4 +1,22 @@
-# Design: Oasis / Tikkaville structure
+# Design: Oasis — classic editorial redesign
+
+September 30, 2026 (abdul-dev). Brief from the owner: more professional and classy, a balanced and restrained palette rather than colorful, fewer words, more intuitive ordering, every image and the hero video looking intentional. This supersedes the Tikkaville visual treatment below; ordering, reservation, sender and membership behavior are unchanged on the server.
+
+- **Reference direction.** Inspo/Stitch were not available in this cloud session and the restaurant's own site (oasiskebabhouse.com) was blocked by the network policy, so the fallback was a public-web direction: editorial restaurant sites in the vein of Dishoom — ivory ground, a serif display face, generous whitespace and one quiet accent — combined with the proven online-ordering pattern (sticky category chips, persistent order summary, bottom order bar on phones). Menu, hours and photos come from the existing repository sources; public review sites were read for tone only. No review quotes, ratings or new claims were added. "Halal" appears on the restaurant's own entrance sign (entrance.webp) and on its menu.
+- **Palette** from the logo, warmed up after owner feedback asking for more colour and life: ivory `#faf7f1`, ink `#1c2530`, Samarkand blue `#1d4e6e`/lapis `#1a4866`/deep lapis `#0f2a3d`, saffron `#d9a441` for primary actions on dark grounds, warm sand `#f3e7d3` bands and page headers. Blue bands carry a faint eight-point-star tile lattice (inline SVG, ~8% opacity).
+- **Type.** Self-hosted Cormorant Garamond (headings) and Inter (body/UI), OFL. Oswald removed.
+- **Hero video** (Instagram reel C1z2xlPLGG9). Portrait 720×990, shown whole with `contain` at its exact aspect ratio on a plain deep-lapis ground: no crop, no blurred copy behind it (the owner found the blurred backdrop read as the old zoomed video under a tint). Desktop: copy left, video right. Phones: video on top (50svh), copy below.
+- **One place per fact.** Opening hours live in the footer and on the Visit page only (hidden from the Visit page footer). Address/phone/directions: footer and Visit page. "Pay in store" appears once, in the pickup note. Removed: header open-status, hero facts row, home "three steps" band, home visit band, menu meta line.
+- **Only functional content** (owner rule: nothing a restaurant site doesn't need). Home is hero (name, one factual line: halal, location, pickup/dine-in; Order pickup / Reserve) → popular dishes with quick add → footer (address, phone, directions, hours). Removed: story section, gallery strip, taglines/eyebrows, reservation side panel, visit-page FAQ, footer logo/blurb/duplicate nav. Gallery page stays reachable by URL only (no nav link). Kept: allergy note on the menu, demo notice, pickup note.
+- **Ordering.** Items without options add in one tap (toast with "View order"); items with required choices open the option dialog. Rows show "N in order". Desktop keeps a sticky order summary beside the menu; tablet/phone show a bottom order bar. Drawer and summaries allow quantity changes and removal. Checkout uses day chips (only open days), preselects the earliest time and skips to the next day when today is full, numbered steps, and an optional "remember my details on this device" (browser-only storage, documented in Privacy). The place-order button shows the total.
+- **Reservations:** party-size chips, day chips, time chips, then details.
+- **Status page:** progress tracker (Received → Confirmed → Preparing → Ready → Collected, or Requested → Confirmed → Seated), directions/call actions, auto-refresh every 30 s until a final state.
+- **Header:** logo, four links, open-now status, Order pickup and order button; phones get a slide-in navigation sheet. No public admin link.
+- Accessibility: native dialogs, real radio inputs behind chips, visible brass focus rings, 16px inputs on phones, reduced motion honored.
+
+---
+
+# Previous design: Oasis / Tikkaville structure
 
 September 20, 2026. The user's explicit new reference is https://tikkaville.com/menu and, clarified twice, the entire Tikkaville website including its homepage. This supersedes the previous dark framed hero/three-card structure. Existing Oasis ordering, reservation, sender and membership workflows remain.
 

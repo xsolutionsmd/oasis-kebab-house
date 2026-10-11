@@ -1,6 +1,8 @@
 """Isolated Linux fault injection for the real updater. No host/network access."""
-import json,os,subprocess,tempfile
+import json,os,subprocess,tempfile,sys
 from pathlib import Path
+PREVIEW='--abdul-dev' in sys.argv
+SLUG='oasis-abdul-dev' if PREVIEW else 'oasis'
 NEW='a'*40;OLD='b'*40;IMAGE='ghcr.io/xsolutionsmd/oasis-kebab-house@sha256:'+'c'*64
 STUB=r'''#!/usr/bin/env python3
 import json,os,pathlib,shutil,signal,sys
@@ -46,6 +48,10 @@ elif cmd in ('cp','mv'):
  else:shutil.move(src,dst)
  if cmd=='mv' and dst.name=='current.json' and mode=='term_state' and once('term'):os.kill(os.getppid(),signal.SIGTERM)
 '''
+if PREVIEW:
+ IMAGE=IMAGE.replace('oasis-kebab-house@','oasis-kebab-house-abdul-dev@')
+ STUB=STUB.replace('oasis-kebab-house@','oasis-kebab-house-abdul-dev@').replace('refs/heads/main','refs/heads/abdul-dev')
+
 def case(mode,first=False):
  with tempfile.TemporaryDirectory() as tmp:
   p=Path(tmp);root=p/'root';state=p/'state';bin=p/'bin'
@@ -54,7 +60,7 @@ def case(mode,first=False):
   if not first:
    (root/'compose.yaml').write_text('old compose');(root/'release.env').write_text('APP_IMAGE=old-image');(state/'current.json').write_text(json.dumps({'revision':OLD,'image':'old-image'}))
   if mode=='guard':(state/'transaction').write_text('prior failure')
-  (p/'template').write_text('new compose');source=(Path(__file__).resolve().parents[1]/'server/update-release.sh').read_text();source=source.replace('root=/opt/oasis','root='+str(root)).replace('state=/var/lib/oasis-deploy','state='+str(state)).replace('/usr/local/share/oasis/compose.yaml',str(p/'template')).replace("[[ $EUID == 0 ]] || { echo 'Run the installed updater as root.' >&2; exit 1; }",':');(p/'update.sh').write_text(source)
+  (p/'template').write_text('new compose');source=(Path(__file__).resolve().parents[1]/('server/abdul-dev/update-release.sh' if PREVIEW else 'server/update-release.sh')).read_text();source=source.replace('root=/opt/'+SLUG,'root='+str(root)).replace('state=/var/lib/'+SLUG+'-deploy','state='+str(state)).replace('/usr/local/share/'+SLUG+'/compose.yaml',str(p/'template')).replace("[[ $EUID == 0 ]] || { echo 'Run the installed updater as root.' >&2; exit 1; }",':');(p/'update.sh').write_text(source)
   (bin/'stub').write_text(STUB);(bin/'stub').chmod(0o755)
   for name in ('git','docker','curl','sleep','sync','tar','cp','mv'):(bin/name).symlink_to(bin/'stub')
   env=dict(os.environ,TEST_CASE=tmp,TEST_MODE=mode,PATH=str(bin)+':'+os.environ['PATH']);r=subprocess.run(['bash',str(p/'update.sh')],env=env,capture_output=True,text=True,timeout=30)
