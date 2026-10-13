@@ -50,3 +50,5 @@ Essentials-only pass: removed decorative/story sections and duplicate navigation
 Full-screen hero pass: Playwright order and reservation flows (1440/390px), overflow sweep at 320–1280px and the 18 app tests pass locally. The headless test browser cannot decode H.264, so the motion check used a temporary WebM copy served only to the test browser; the site still ships plov.mp4.
 
 Whole-video hero, menu photos and scroll fix: a wheel-scroll probe on /menu previously stepped backwards (368→335, 1072→1070 …) on desktop; after the fix every page scrolls in full 400px steps at 1440 and 390px. Same order/reservation flows, overflow sweep and 18 app tests pass locally.
+
+Motion pass: reveal-on-scroll verified with real wheel scrolling (all revealed blocks reach their visible state at 1440 and 390px); scroll probe still steps a full 400px everywhere; order/reservation flows, overflow sweep and 18 app tests pass.

@@ -412,6 +412,15 @@ $$('dialog').forEach(d => d.addEventListener('click', e => {
 $('#open-bag').addEventListener('click', openBag);
 $('#open-nav').addEventListener('click', () => $('#nav-dialog').showModal());
 $('#year').textContent = new Date().getFullYear();
+// Header tightens once the page scrolls.
+const onScroll = () => document.body.classList.toggle('scrolled', scrollY > 8);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+// Sections fade up as they come into view. Skipped entirely for reduced motion.
+function reveal() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  $$('.section-heading, .dish-grid, .menu-category, .form-card, .order-summary, .visit-block, .status-card').forEach((el, n) => { el.classList.add('reveal'); el.style.setProperty('--d', (n % 4) * 60 + 'ms'); io.observe(el); });
+}
 $$('.main-nav a, #nav-dialog nav a').forEach(a => { if (a.pathname === location.pathname) a.setAttribute('aria-current', 'page'); });
 
 async function init() {
@@ -428,6 +437,7 @@ async function init() {
     renderChrome();
     const pages = { '/': home, '/menu': menuPage, '/gallery': gallery, '/visit': visit, '/reserve': reservation, '/checkout': checkout, '/privacy': privacy };
     if (pages[path]) pages[path]();
+    if (path !== '/menu') reveal();
     else if (/^\/(order|reservation)\//.test(path)) statusPage();
   } catch (e) {
     $('#main').innerHTML = `<div class="page-content"><h1>We’ll be right back.</h1><p>${esc(e.message)}</p><a class="button" href="/">Try again</a></div>`;

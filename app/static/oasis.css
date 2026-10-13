@@ -117,12 +117,14 @@ p { color: var(--muted); }
 /* Dish cards */
 .dish-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .dish-card h3 { font-size: 24px; }
-.dish-card { display: flex; flex-direction: column; min-width: 0; }
+.dish-card { display: flex; flex-direction: column; min-width: 0; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.dish-card:hover { transform: translateY(-4px); }
+.dish-photo { transition: box-shadow .35s; }
+.dish-card:hover .dish-photo { box-shadow: 0 18px 40px #0a568824; }
 .dish-photo { display: block; padding: 0; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 12px; background: var(--sand); }
 .dish-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-.dish-card:hover .dish-photo img { transform: scale(1.03); }
+.dish-card:hover .dish-photo img { transform: scale(1.05); }
 .dish-card-body { display: flex; flex-direction: column; justify-content: space-between; gap: 14px; flex: 1; padding-top: 18px; }
-.dish-card h3 { font-size: 26px; }
 .dish-card h3 button { padding: 0; text-align: left; font: inherit; }
 .dish-card-body p { font-size: 15px; margin-top: 6px; }
 .dish-card-foot { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 14px; }
@@ -399,6 +401,35 @@ label { font-size: 14px; font-weight: 500; color: var(--ink); margin: 0; }
   .progress li { font-size: 11px; }
   .search-field { width: 100%; }
 }
+
+/* Motion: smooth page-to-page fades, header that tightens on scroll, sections that rise in. */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: cubic-bezier(.2,.7,.2,1); }
+.site-header { view-transition-name: site-header; transition: height .3s ease, box-shadow .3s ease, background-color .3s ease; }
+body.scrolled .site-header { box-shadow: 0 6px 24px #0a56881a; background: color-mix(in srgb, #fff 86%, transparent); }
+.button { transition: background .25s, color .25s, border-color .25s, transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s; }
+.button:hover { transform: translateY(-1px); }
+.button.primary:hover { box-shadow: 0 10px 24px #0a568833; }
+.add-button { transition: background .2s, color .2s, transform .2s cubic-bezier(.2,.7,.2,1); }
+.add-button:hover:not(:disabled) { transform: scale(1.08); }
+.add-button:active:not(:disabled) { transform: scale(.94); }
+.menu-row { transition: background .25s; }
+.menu-row:hover { background: #ffffffb3; }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1) var(--d, 0ms), transform .7s cubic-bezier(.2,.7,.2,1) var(--d, 0ms); }
+.reveal.in { opacity: 1; transform: none; }
+.hero-copy > * { animation: rise .8s cubic-bezier(.2,.7,.2,1) both; }
+.hero-copy > :nth-child(2) { animation-delay: .08s; }
+.hero-copy > :nth-child(3) { animation-delay: .16s; }
+.hero-media { animation: settle 1s cubic-bezier(.2,.7,.2,1) both .1s; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+@keyframes settle { from { opacity: 0; transform: scale(.96); } }
+dialog[open] { animation: pop .28s cubic-bezier(.2,.7,.2,1); }
+dialog[open]::backdrop { animation: fade .28s ease; }
+.drawer[open], .nav-sheet[open] { animation: slide-in .32s cubic-bezier(.2,.7,.2,1); }
+@keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+@keyframes slide-in { from { transform: translateX(40px); opacity: 0; } }
+@keyframes fade { from { opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
