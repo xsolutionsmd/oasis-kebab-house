@@ -85,5 +85,25 @@
     "file": "mandala.webp",
     "source": "https://oasiskebabhouse.com/images/overlay-mandala.png",
     "transformation": "Restaurant site's mandala ornament, trimmed and resized to 560px; WebP with alpha"
+  },
+  {
+    "file": "lagman.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Lagman photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "shurpa.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Shurpa photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "salad.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Salad photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "kebab-special.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Shish kebab with rice photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
   }
 ]
