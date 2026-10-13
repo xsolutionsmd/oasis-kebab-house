@@ -6,7 +6,10 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const money = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v / 100);
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
 const media = n => '/static/media/' + n;
-const dishPhoto = i => media(i.id === 'samarkand-plov' ? 'plov-dish.webp' : i.image);
+// Real photos of Oasis dishes (restaurant Instagram and its printed menu), matched only where the dish is certain.
+const PHOTOS = { 'samarkand-plov': 'plov-dish.webp', 'plov-special': 'plov-dish.webp', 'tandoori-samsa': 'samsa.webp', 'samsa-special': 'samsa.webp', 'lagman': 'lagman.webp', 'shurpa': 'shurpa.webp', 'shish-kebab-special': 'kebab-special.webp' };
+const CATEGORY_PHOTOS = { Mains: 'plov-dish.webp', Kebabs: 'grill.webp', Starters: 'samsa.webp', Salads: 'salad.webp', Soups: 'lagman.webp', Seafood: 'shrimp.webp', 'Lunch Specials': 'kebab-special.webp' };
+const dishPhoto = i => PHOTOS[i.id] ? media(PHOTOS[i.id]) : i.image ? media(i.image) : '';
 const PHONE = '410-777-9700', TEL = 'tel:+14107779700';
 const maps = 'https://www.google.com/maps/search/?api=1&query=Oasis+Uzbek+Kebab+House+1430+Reisterstown+Rd+Pikesville+MD';
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -98,7 +101,7 @@ function bagHTML() {
   if (!bag.length) return '<div class="empty-bag"><p>Your order is empty.</p><p class="help">Add a few dishes from the menu to get started.</p></div>';
   return '<ul class="line-items">' + bag.map((l, n) => {
     const i = items.find(i => i.id === l.id), choices = Object.values(l.choices || {});
-    return `<li class="line-item">${i.image ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}<div class="line-body"><h3>${esc(i.name)}</h3>${choices.length ? `<p>${choices.map(esc).join(' · ')}</p>` : ''}<div class="quantity"><button type="button" data-quantity="${n}" data-delta="-1" aria-label="${l.quantity === 1 ? 'Remove' : 'Remove one'} ${esc(i.name)}">${l.quantity === 1 ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2m-7 0 1 12h8l1-12"/></svg>' : '−'}</button><span aria-label="Quantity">${l.quantity}</span><button type="button" data-quantity="${n}" data-delta="1" aria-label="Add one ${esc(i.name)}" ${l.quantity >= 20 ? 'disabled' : ''}>+</button></div></div><span class="line-price">${money(linePrice(l) * l.quantity)}</span></li>`;
+    return `<li class="line-item">${dishPhoto(i) ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}<div class="line-body"><h3>${esc(i.name)}</h3>${choices.length ? `<p>${choices.map(esc).join(' · ')}</p>` : ''}<div class="quantity"><button type="button" data-quantity="${n}" data-delta="-1" aria-label="${l.quantity === 1 ? 'Remove' : 'Remove one'} ${esc(i.name)}">${l.quantity === 1 ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2m-7 0 1 12h8l1-12"/></svg>' : '−'}</button><span aria-label="Quantity">${l.quantity}</span><button type="button" data-quantity="${n}" data-delta="1" aria-label="Add one ${esc(i.name)}" ${l.quantity >= 20 ? 'disabled' : ''}>+</button></div></div><span class="line-price">${money(linePrice(l) * l.quantity)}</span></li>`;
   }).join('') + '</ul>';
 }
 function openBag() {
@@ -117,7 +120,6 @@ function updateOrderSummaries() {
 }
 
 /* ---------- Shared bits ---------- */
-function demoNote() { return config.demo ? '<p class="demo-note">Website preview — orders and table requests here are tests and are not sent to the kitchen.</p>' : ''; }
 function head(title, kicker = 'Oasis Uzbek Kebab House', description = '') {
   return `<header class="page-head"><h1>${esc(title)}</h1>${description ? `<p class="lede">${esc(description)}</p>` : ''}</header>`;
 }
@@ -131,16 +133,18 @@ function dishCard(i) {
 /* ---------- Home ---------- */
 function home() {
   document.body.classList.add('home');
-  const signature = items.filter(i => i.image);
+  const signature = ['samarkand-plov', 'lagman', 'tandoori-samsa', 'shish-kebab-special'].map(id => items.find(i => i.id === id)).filter(Boolean);
   $('#main').innerHTML = `
   <section class="hero" aria-label="Welcome to Oasis">
-    <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
     <div class="hero-copy">
       <h1>Oasis Uzbek Kebab House</h1>
       <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
-      <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
+      <div class="hero-actions"><a class="button primary" href="/menu">Order pickup ${arrow}</a><a class="button" href="/reserve">Reserve a table</a></div>
     </div>
-    <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
+    <figure class="hero-media">
+      <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
+      <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
+    </figure>
   </section>
   <section class="section popular">
     <div class="section-heading"><img class="ornament" src="${media('mandala.webp')}" alt="" width="96" height="96"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
@@ -165,7 +169,7 @@ function menuPage() {
   ${closed ? '<p class="notice">Online pickup orders are paused right now. Please call <a href="' + TEL + '">' + PHONE + '</a>.</p>' : ''}
   <div class="menu-tools"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
   <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav></div>
-  <div class="ordering-layout"><div class="ordering-main">${demoNote()}<div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div><aside class="menu-cart" id="menu-cart" aria-label="Your order"></aside></div>
+  <div class="ordering-layout"><div class="ordering-main"><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div><aside class="menu-cart" id="menu-cart" aria-label="Your order"></aside></div>
   <button class="order-bar" id="order-bar" type="button" hidden></button>`;
   drawMenu(); updateOrderSummaries();
   $('#menu-search').addEventListener('input', e => { search = e.target.value; drawMenu(); });
@@ -182,18 +186,22 @@ function setActiveTab(id) {
   $$('.category-tabs a').forEach(a => {
     const active = a.hash === '#' + id;
     a.classList.toggle('active', active);
-    if (active) { a.setAttribute('aria-current', 'true'); a.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } else a.removeAttribute('aria-current');
+    if (!active) { a.removeAttribute('aria-current'); return; }
+    a.setAttribute('aria-current', 'true');
+    // Scroll only the tab strip sideways. scrollIntoView also moved the page and fought the reader's own scrolling.
+    const strip = a.parentElement;
+    if (a.offsetLeft < strip.scrollLeft || a.offsetLeft + a.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
   });
 }
 function menuRow(i) {
-  return `<article class="menu-row${i.available ? '' : ' unavailable'}"><button class="menu-row-main" type="button" data-item="${i.id}"><span class="menu-row-text"><span class="menu-row-name">${esc(i.name)}</span>${i.description ? `<span class="dish-description">${esc(i.description)}</span>` : ''}<span class="menu-row-meta"><span class="price">${i.available ? money(i.price) : 'Unavailable'}</span>${i.options.length ? '<span class="choice-tag">Choices</span>' : ''}<span class="in-bag" data-in-bag="${i.id}"></span></span></span>${i.image ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}</button>${addButton(i)}</article>`;
+  return `<article class="menu-row${i.available ? '' : ' unavailable'}"><button class="menu-row-main" type="button" data-item="${i.id}"><span class="menu-row-text"><span class="menu-row-name">${esc(i.name)}</span>${i.description ? `<span class="dish-description">${esc(i.description)}</span>` : ''}<span class="menu-row-meta"><span class="price">${i.available ? money(i.price) : 'Unavailable'}</span>${i.options.length ? '<span class="choice-tag">Choices</span>' : ''}<span class="in-bag" data-in-bag="${i.id}"></span></span></span>${dishPhoto(i) ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}</button>${addButton(i)}</article>`;
 }
 function drawMenu() {
   const q = search.trim().toLowerCase();
   const shown = items.filter(i => (i.name + ' ' + i.description + ' ' + i.category).toLowerCase().includes(q));
   const categories = [...new Set(shown.map(i => i.category))];
   $('#menu-grid').innerHTML = shown.length
-    ? categories.map(c => `<section class="menu-category" id="${categoryId(c)}"><h2>${esc(c)}</h2><div class="menu-list">${shown.filter(i => i.category === c).map(menuRow).join('')}</div></section>`).join('')
+    ? categories.map(c => `<section class="menu-category" id="${categoryId(c)}"><h2>${CATEGORY_PHOTOS[c] ? `<img src="${media(CATEGORY_PHOTOS[c])}" alt="" loading="lazy">` : ''}${esc(c)}</h2><div class="menu-list">${shown.filter(i => i.category === c).map(menuRow).join('')}</div></section>`).join('')
     : `<p class="empty" role="status">No dishes match “${esc(search)}”.</p>`;
   updateOrderSummaries();
   menuObserver?.disconnect();
@@ -207,7 +215,7 @@ function quickAdd(id) {
 }
 function showItem(id) {
   const i = items.find(i => i.id === id); if (!i) return;
-  $('#item-content').innerHTML = `${i.image ? `<img class="dialog-image" src="${dishPhoto(i)}" alt="${esc(i.name)}">` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add to order' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form>`;
+  $('#item-content').innerHTML = `${dishPhoto(i) ? `<img class="dialog-image" src="${dishPhoto(i)}" alt="${esc(i.name)}">` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add to order' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form>`;
   let quantity = 1; const form = $('#add-item');
   function recalc() {
     const f = new FormData(form), extra = i.options.filter((o, n) => String(f.get('option-' + n)).endsWith('(+$1)')).length * 100;
@@ -288,7 +296,7 @@ async function loadSlots(reserve, auto = false) {
 }
 function reservation() {
   const max = config.settings.max_party;
-  $('#main').innerHTML = head('Reserve a table') + `<div class="page-content">${demoNote()}<div class="booking-layout">
+  $('#main').innerHTML = head('Reserve a table') + `<div class="page-content"><div class="booking-layout">
   <form class="form-card" id="request-form" novalidate>
     ${config.settings.accept_reservations ? '' : `<p class="notice">Online table requests are paused. Please call <a href="${TEL}">${PHONE}</a>.</p>`}
     <div class="form-step"><h2><span>1</span>Party size</h2><div class="chips guest-chips">${Array.from({ length: max }, (_, n) => `<label class="chip"><input type="radio" name="guests" value="${n + 1}" ${n === 1 ? 'checked' : ''}><span>${n + 1}</span></label>`).join('')}</div><p class="help">More than ${max} guests? Call <a href="${TEL}">${PHONE}</a>.</p></div>
@@ -306,13 +314,13 @@ function checkout() {
     $('#main').innerHTML = head('Your order is empty', 'Pickup') + `<div class="page-content"><a class="button primary" href="/menu">Browse the menu ${arrow}</a></div>`;
     return;
   }
-  $('#main').innerHTML = head('Checkout', 'Pickup · pay in store') + `<div class="page-content">${demoNote()}<div class="checkout-layout">
+  $('#main').innerHTML = head('Checkout', 'Pickup · pay in store') + `<div class="page-content"><div class="checkout-layout">
   <form class="form-card" id="request-form" novalidate>
     ${config.settings.accept_orders ? '' : `<p class="notice">Online pickup orders are paused. Please call <a href="${TEL}">${PHONE}</a>.</p>`}
     <div class="form-step"><h2><span>1</span>Pickup time</h2><div class="form-grid">${dateChips()}<fieldset class="chip-field full"><legend>Time</legend><div id="time-box"></div></fieldset><p class="help full" id="slot-help" aria-live="polite"></p></div></div>
     <div class="form-step"><h2><span>2</span>Your details</h2><div class="form-grid">${contactFields()}<label class="full">Order notes <span class="help">Optional</span><textarea name="notes" maxlength="1000" placeholder="Allergies or special requests"></textarea></label></div></div>
     <p class="form-error" role="alert" id="form-error"></p>
-    <button class="button primary block" type="submit"><span>${config.demo ? 'Place test order' : 'Place order'}</span><span id="place-total">${money(totals().total)}</span></button>
+    <button class="button primary block" type="submit"><span>Place order</span><span id="place-total">${money(totals().total)}</span></button>
     <p class="help">No online payment — pay at the counter. We’ll email you when the restaurant confirms. <a href="/privacy">Privacy</a></p>
   </form>
   <aside class="panel order-summary"><div class="summary-head"><h2>Your order</h2><a class="text-link" href="/menu">Add items</a></div>${pickupNote()}<div id="checkout-bag">${bagHTML()}${totalHTML()}</div></aside>
@@ -364,7 +372,7 @@ async function statusPage() {
     const steps = kind === 'order' ? [['received', 'Received'], ['accepted', 'Confirmed'], ['preparing', 'Preparing'], ['ready', 'Ready'], ['collected', 'Collected']] : [['requested', 'Requested'], ['confirmed', 'Confirmed'], ['seated', 'Seated']];
     const at = steps.findIndex(s => s[0] === r.status), stopped = at < 0;
     const [title, description] = words[r.status] || ['An update from Oasis', ''];
-    $('#main').innerHTML = `<div class="page-content status-wrap"><article class="panel status-card">${demoNote()}<p class="eyebrow">${kind === 'order' ? 'Pickup order' : 'Table request'}</p><h1>${title}</h1><p>${description}</p>
+    $('#main').innerHTML = `<div class="page-content status-wrap"><article class="panel status-card"><p class="eyebrow">${kind === 'order' ? 'Pickup order' : 'Table request'}</p><h1>${title}</h1><p>${description}</p>
       ${stopped ? `<span class="status-pill stopped">${esc(r.status)}</span>` : `<ol class="progress">${steps.map(([, label], n) => `<li class="${n < at ? 'done' : n === at ? 'current' : ''}"${n === at ? ' aria-current="step"' : ''}><span></span>${label}</li>`).join('')}</ol>`}
       <div class="status-when"><span>${kind === 'order' ? 'Pickup' : 'Table'}</span><strong>${niceTime(r.data.time)}</strong>${r.data.guests ? `<span>${r.data.guests} ${r.data.guests === 1 ? 'guest' : 'guests'}</span>` : ''}</div>
       ${r.data.update_note ? `<p class="notice">${esc(r.data.update_note)}</p>` : ''}
@@ -376,7 +384,7 @@ async function statusPage() {
   } catch (e) { $('#main').innerHTML = head('Request not found') + `<div class="page-content"><p>${esc(e.message)}</p></div>`; }
 }
 function privacy() {
-  $('#main').innerHTML = head('Your privacy') + `<div class="page-content text-page"><p>This is an X Solutions demonstration website for Oasis Uzbek Kebab House. Test requests are not restaurant orders or confirmed bookings.</p><h2>Information you provide</h2><p>Pickup and table requests store your name, email, phone number, chosen time, dishes and any notes. Authorized administrators and employees can see and update these details to manage requests. Avoid entering sensitive information in notes.</p><h2>Admin access and email</h2><p>Admin sign-in uses Google to verify an invited email address. An administrator can separately connect a Google account to send confirmations through Gmail. Connecting a sender does not give that account admin access.</p><h2>Storage</h2><p>Your order is saved in this browser. If you choose “Remember my details”, your name, email and phone are also saved in this browser only; untick it on your next request to remove them. Essential session cookies support sign-in and protect forms. Request records are stored on the application server. This site does not collect payment card information and does not include advertising trackers.</p><h2>Questions or deletion</h2><p>For questions about this demo or to request removal of submitted information, contact <a href="https://xsolutionsmd.com">X Solutions</a>. For restaurant questions, call <a href="${TEL}">${PHONE}</a>.</p></div>`;
+  $('#main').innerHTML = head('Your privacy') + `<div class="page-content text-page"><p>Oasis Uzbek Kebab House takes pickup orders and table requests through this website.</p><h2>Information you provide</h2><p>Pickup and table requests store your name, email, phone number, chosen time, dishes and any notes. Authorized administrators and employees can see and update these details to manage requests. Avoid entering sensitive information in notes.</p><h2>Admin access and email</h2><p>Admin sign-in uses Google to verify an invited email address. An administrator can separately connect a Google account to send confirmations through Gmail. Connecting a sender does not give that account admin access.</p><h2>Storage</h2><p>Your order is saved in this browser. If you choose “Remember my details”, your name, email and phone are also saved in this browser only; untick it on your next request to remove them. Essential session cookies support sign-in and protect forms. Request records are stored on the application server. This site does not collect payment card information and does not include advertising trackers.</p><h2>Questions or deletion</h2><p>To ask about or remove information you submitted, call <a href="${TEL}">${PHONE}</a>.</p></div>`;
 }
 
 /* ---------- Global events ---------- */
