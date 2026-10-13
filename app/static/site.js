@@ -134,23 +134,17 @@ function home() {
   const signature = items.filter(i => i.image);
   $('#main').innerHTML = `
   <section class="hero" aria-label="Welcome to Oasis">
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <h1>Oasis Uzbek Kebab House</h1>
-        <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
-        <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
-      </div>
-      <figure class="hero-media">
-        <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
-        <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
-      </figure>
+    <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
+    <div class="hero-copy">
+      <h1>Oasis Uzbek Kebab House</h1>
+      <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
+      <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
     </div>
+    <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
   </section>
-  <section class="band band-sand">
-    <div class="section">
-      <div class="section-heading"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
-      <div class="dish-grid">${signature.map(dishCard).join('')}</div>
-    </div>
+  <section class="section popular">
+    <div class="section-heading"><img class="ornament" src="${media('mandala.webp')}" alt="" width="96" height="96"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
+    <div class="dish-grid">${signature.map(dishCard).join('')}</div>
   </section>`;
   const video = $('#hero-video'), toggle = $('#video-toggle');
   const update = () => { toggle.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video'); toggle.innerHTML = video.paused ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>' : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'; };

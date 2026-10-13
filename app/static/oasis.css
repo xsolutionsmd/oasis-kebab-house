@@ -1,14 +1,14 @@
 /* Oasis public theme. Loaded after site.css, whose base components the staff workspace shares.
    Palette is drawn from the logo: deep Samarkand blue, brass, warm ivory. */
 :root {
-  --bg: #faf7f1;
+  --bg: #f4f4f4;
   --surface: #fff;
   --sand: #f2ece2;
   --ink: #1c2530;
   --muted: #5f6670;
   --line: #e5ddd0;
-  --blue: #1d4e6e;
-  --blue-deep: #13354c;
+  --blue: #0a5688;
+  --blue-deep: #073f64;
   --brass: #a8823f;
   --night: #152029;
   --lapis: #1a4866;
@@ -28,7 +28,7 @@
   background: var(--bg);
   color: var(--ink);
 }
-body { background: var(--bg); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg) url(/static/media/bg-pattern.webp) 0 0 / 519px auto repeat; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 html { scroll-padding-top: calc(var(--header) + 80px); }
 h1, h2, h3, .serif { font-family: var(--serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.08; color: var(--ink); }
 h1 { font-size: clamp(40px, 5vw, 60px); }
@@ -92,31 +92,31 @@ p { color: var(--muted); }
 .section-heading .eyebrow { margin-bottom: 10px; }
 .page-head { display: block; max-width: var(--wrap); margin: 0 auto; padding: clamp(28px, 4vw, 48px) var(--gutter) clamp(20px, 3vw, 32px); }
 .page-head .lede { margin-top: 14px; }
-.page-head, .menu-top { position: relative; margin-bottom: 36px; background: var(--sand-warm); box-shadow: 0 0 0 100vmax var(--sand-warm); clip-path: inset(0 -100vmax); }
+.page-head, .menu-top { margin-bottom: 12px; }
 .menu-top { margin-bottom: 0; }
 .page-content { max-width: var(--wrap); padding: 0 var(--gutter) 96px; }
 .demo-note { background: var(--sand); color: #6a5a3a; border-radius: 8px; font-size: 13px; padding: 10px 14px; margin: 0 0 24px; }
 .notice { background: var(--sand); border-radius: 8px; padding: 14px 16px; color: var(--ink); }
 
 /* Hero: the portrait plov video is shown whole at its own proportions on a plain dark ground. */
-.hero { background: var(--lapis-deep); color: #fff; }
-.hero-inner { max-width: 1280px; margin: 0 auto; padding: clamp(28px, 4vw, 48px) var(--gutter); min-height: min(calc(100svh - var(--header)), 860px); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(32px, 5vw, 88px); align-items: center; }
-.hero .eyebrow { color: var(--saffron); }
-.hero h1 { color: #fff; font-size: clamp(46px, 6vw, 84px); line-height: 1; letter-spacing: -0.02em; }
-.hero .lede { margin-top: 24px; font-size: 19px; color: #dfe7ee; }
+.hero { position: relative; isolation: isolate; overflow: hidden; height: calc(100svh - var(--header)); min-height: 520px; max-height: 1000px; display: flex; align-items: flex-end; justify-content: center; background: var(--lapis-deep); color: #fff; text-align: center; }
+.hero video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 58%; z-index: -2; }
+.hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, #07141f33 0%, #07141f1a 35%, #07141fcc 100%); }
+.hero-copy { padding: 0 var(--gutter) clamp(48px, 9vh, 96px); max-width: 860px; }
+.hero h1 { color: #fff; font-size: clamp(44px, 6vw, 82px); line-height: 1.02; letter-spacing: -0.01em; text-shadow: 0 2px 24px #0006; }
+.hero .lede { margin: 18px auto 0; font-size: 19px; color: #eef2f5; text-shadow: 0 1px 12px #0008; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 32px; }
-.hero-media { position: relative; margin: 0; height: min(calc(100svh - var(--header) - 72px), 780px); min-height: 460px; aspect-ratio: 720 / 990; }
-.hero-media video { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 18px; box-shadow: 0 24px 60px #00000055; }
-.video-toggle { position: absolute; right: 14px; bottom: 14px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #0f1a2280; color: #fff; border: 1px solid #ffffff55; backdrop-filter: blur(6px); }
+.hero .hero-actions { justify-content: center; }
+.video-toggle { position: absolute; right: 24px; bottom: 24px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #0f1a2280; color: #fff; border: 1px solid #ffffff55; backdrop-filter: blur(6px); }
 .video-toggle svg { width: 16px; height: 16px; fill: currentColor; stroke: currentColor; }
 .button.saffron { background: var(--saffron); border-color: var(--saffron); color: var(--lapis-deep); }
 .button.saffron:hover { background: #e6b75a; border-color: #e6b75a; color: var(--lapis-deep); }
 
 /* Colour bands */
 .band .section { padding-bottom: clamp(56px, 8vw, 104px); }
-.band-sand { background: var(--sand-warm); position: relative; }
-.band-sand .dish-photo { background: #e9dcc5; }
-.band-sand .dish-card-foot { border-color: #e2d3ba; }
+.popular { padding-bottom: clamp(56px, 8vw, 104px); }
+.popular .section-heading { flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+.ornament { width: 96px; height: 96px; opacity: .9; }
 
 /* Dish cards */
 .dish-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
@@ -346,12 +346,9 @@ label { font-size: 14px; font-weight: 500; color: var(--ink); margin: 0; }
   .main-nav { display: none; }
   .menu-toggle { display: grid; }
   .header-order { min-height: 40px; padding: 8px 16px; font-size: 14px; }
-  .hero-inner { grid-template-columns: 1fr; min-height: 0; padding: 20px 0 40px; gap: 28px; }
-  .hero-media { order: -1; justify-self: center; height: auto; min-height: 0; width: min(calc(100% - 2 * var(--gutter)), calc(50svh * 720 / 990)); }
-  .hero-media video { border-radius: 14px; }
-  .hero-copy { padding: 0 var(--gutter); }
-  .hero h1 { font-size: clamp(40px, 11vw, 60px); }
-  .hero .lede { font-size: 17px; margin-top: 16px; }
+  .hero h1 { font-size: clamp(38px, 10.5vw, 56px); }
+  .hero .lede { font-size: 16px; }
+  .video-toggle { top: 16px; bottom: auto; right: 16px; }
   .hero-actions { margin-top: 24px; }
   .hero-actions .button { flex: 1 1 auto; }
   .dish-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); gap: 16px; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 8px; scrollbar-width: none; }
