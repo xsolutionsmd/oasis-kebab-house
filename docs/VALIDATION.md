@@ -46,3 +46,5 @@ Container evidence (cloud session, Docker 29.3.1, revision 99afe3d): the reposit
 Simplification pass (after PR #4 merged): removed the blurred canvas backdrop and repeated hours/status/address blocks. Playwright order and reservation flows at 1440 and 390px, the overflow sweep at 320–1280px and the 18 app tests pass locally. Instagram, Yelp, oasiskebabhouse.com and reference restaurant sites remained blocked by the session network policy.
 
 Essentials-only pass: removed decorative/story sections and duplicate navigation. Same Playwright flows (1440/390px), overflow sweep and 18 app tests pass locally. Yelp remained blocked by the session network policy, so no Yelp photos were added.
+
+Full-screen hero pass: Playwright order and reservation flows (1440/390px), overflow sweep at 320–1280px and the 18 app tests pass locally. The headless test browser cannot decode H.264, so the motion check used a temporary WebM copy served only to the test browser; the site still ships plov.mp4.
