@@ -149,7 +149,7 @@ p { color: var(--muted); }
 .menu-page .notice { max-width: 1320px; margin: 0 auto 12px; width: calc(100% - 2 * var(--gutter)); }
 .ordering-main { min-width: 0; }
 .menu-category h2 img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px #fff, 0 0 0 3px #c8964f; flex-shrink: 0; }
-.menu-category h2 { display: flex; align-items: center; gap: 16px; font-size: 34px; padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px solid var(--ink); }
+.menu-category h2 { display: flex; align-items: center; gap: 16px; font-size: 34px; margin-bottom: 18px; }
 .menu-row-main:hover .menu-row-name { color: var(--blue); }
 .menu-row-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
 .menu-row-name { font-weight: 600; font-size: 16px; color: var(--ink); line-height: 1.35; }
@@ -383,15 +383,16 @@ dialog[open]::backdrop { animation: fade .28s ease; }
 .video-toggle { position: absolute; right: 16px; top: 16px; translate: 0 -200%; padding: 8px 14px; border-radius: 999px; background: #0f1a22cc; color: #fff; font-size: 14px; transition: translate .2s; z-index: 2; }
 .video-toggle:focus-visible { translate: 0 0; }
 @media (max-width: 860px) {
-  .hero { display: flex; align-items: flex-end; justify-content: center; text-align: center; color: #fff; overflow: hidden; background: var(--lapis-deep); }
-  .hero-videos { position: absolute; inset: 0; z-index: -2; }
-  .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, #07141f30 0%, #07141f10 35%, #07141fd9 100%); }
-  .hero-copy { width: auto; padding: 0 var(--gutter) clamp(40px, 8vh, 80px); }
-  .hero h1 { color: #fff; font-size: clamp(38px, 10.5vw, 56px); text-shadow: 0 2px 24px #0006; }
-  .hero .lede { color: #eef2f5; font-size: 16px; text-shadow: 0 1px 12px #0008; }
+  /* Phones: the whole clip at its own proportions (no crop), copy below on the pattern. */
+  .hero { display: block; height: auto; text-align: center; }
+  .hero-videos { height: auto; aspect-ratio: 720 / 990; max-height: 72svh; margin: 0 auto; }
+  .hero-videos video { object-fit: contain; }
+  .hero-copy { width: auto; padding: 28px var(--gutter) 40px; }
+  .hero h1 { font-size: clamp(36px, 10vw, 52px); }
+  .hero .lede { font-size: 16px; }
   .hero .hero-actions { justify-content: center; }
-  .hero .button.ghost { border-color: #ffffff66; color: #fff; }
 }
+
 
 /* ---------- Menu: side panel, rounded item cards ---------- */
 .ordering-layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 36px; max-width: 1320px; margin: 0 auto; padding: 28px var(--gutter) 120px; transition: grid-template-columns .35s cubic-bezier(.2,.7,.2,1); }
