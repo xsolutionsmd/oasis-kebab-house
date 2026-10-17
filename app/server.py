@@ -92,7 +92,7 @@ def create_app(test_config=None):
     @app.after_request
     def security(r):
         r.headers['X-Content-Type-Options']='nosniff';r.headers['Referrer-Policy']='same-origin';r.headers['X-Frame-Options']='SAMEORIGIN'
-        r.headers['Content-Security-Policy']="default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://accounts.google.com"
+        r.headers['Content-Security-Policy']="default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://accounts.google.com"
         r.headers['X-Robots-Tag']='noindex, nofollow'
         if not request.path.startswith('/static/'):r.headers['Cache-Control']='no-store'
         return r
