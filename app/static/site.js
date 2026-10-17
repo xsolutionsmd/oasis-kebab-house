@@ -89,8 +89,8 @@ function addLine(i, quantity = 1, choices = {}) {
   if (line && line.quantity + quantity > 20) { toast('Maximum 20 of each item.'); return false; }
   if (line) line.quantity += quantity; else bag.push({ id: i.id, quantity, choices });
   persistBag();
-  const b = $('#open-bag'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump');
-  toast(`${i.name} added`, '<button type="button" class="toast-action" data-open-bag>View order</button>');
+  for (const b of [$('#open-bag'), $('#order-bar')]) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+  toast(`${i.name} added`);
   return true;
 }
 function totalHTML() {
@@ -110,9 +110,13 @@ function openBag() {
 }
 function updateOrderSummaries() {
   const count = bagCount(), bar = $('#order-bar');
-  if (bar) { bar.hidden = !count; bar.innerHTML = `<span class="order-bar-count">${count}</span><strong>View order</strong><span>${money(totals().total)}</span>`; }
-  const side = $('#menu-cart');
-  if (side) side.innerHTML = `<h2>Your order</h2>${bagHTML()}${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : ''}`;
+  // Floating checkout button: only when the order has something in it, and never on checkout or status pages.
+  if (bar) {
+    const show = count > 0 && !/^\/(checkout|order\/|reservation\/|admin)/.test(location.pathname);
+    bar.hidden = !show;
+    bar.innerHTML = `<span class="order-bar-count">${count}</span><strong>Checkout</strong><span class="order-bar-total">${money(totals().total)}</span>${arrow}`;
+    bar.setAttribute('aria-label', `Checkout, ${count} ${count === 1 ? 'item' : 'items'}, ${money(totals().total)}`);
+  }
   $$('[data-in-bag]').forEach(el => { const q = bag.filter(l => l.id === el.dataset.inBag).reduce((n, l) => n + l.quantity, 0); el.textContent = q ? q + ' in order' : ''; });
   if ($('#checkout-bag') && bag.length) $('#checkout-bag').innerHTML = bagHTML() + totalHTML();
   if ($('#place-total')) $('#place-total').textContent = money(totals().total);
@@ -174,23 +178,21 @@ function menuPage() {
   const categories = [...new Set(items.map(i => i.category))];
   const closed = !config.settings.accept_orders;
   $('#main').innerHTML = `
-  <div class="menu-top"><h1>Menu</h1></div>
+  <h1 class="visually-hidden">Menu</h1>
   ${closed ? '<p class="notice">Online pickup orders are paused right now. Please call <a href="' + TEL + '">' + PHONE + '</a>.</p>' : ''}
   <div class="ordering-layout">
     <aside class="menu-side" id="menu-side" aria-label="Browse the menu">
-      <div class="menu-side-head"><span>Browse</span><button class="icon-button side-toggle" id="side-toggle" type="button" aria-expanded="true" aria-controls="menu-side-body" aria-label="Hide menu sections"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button></div>
+      <div class="menu-side-head"><span>Menu</span><button class="icon-button side-toggle" id="side-toggle" type="button" aria-expanded="true" aria-controls="menu-side-body" aria-label="Hide menu sections"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button></div>
       <div class="menu-side-body" id="menu-side-body">
         <label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
         <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav>
       </div>
     </aside>
     <div class="ordering-main"><button class="button small browse-button" id="browse-button" type="button" aria-controls="menu-side"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Sections &amp; search</button><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div>
-    <aside class="menu-cart" id="menu-cart" aria-label="Your order"></aside>
   </div>
-  <button class="order-bar" id="order-bar" type="button" hidden></button>`;
+`;
   drawMenu(); updateOrderSummaries();
   $('#menu-search').addEventListener('input', e => { search = e.target.value; drawMenu(); });
-  $('#order-bar').addEventListener('click', openBag);
   $('.category-tabs').addEventListener('click', e => {
     const a = e.target.closest('a'); if (!a) return;
     e.preventDefault();
@@ -426,7 +428,6 @@ function privacy() {
 /* ---------- Global events ---------- */
 document.addEventListener('click', e => {
   const close = e.target.closest('[data-close]'); if (close) close.closest('dialog').close();
-  if (e.target.closest('[data-open-bag]')) { $('#toast').classList.remove('visible'); openBag(); }
   const add = e.target.closest('[data-add]'); if (add) { quickAdd(add.dataset.add); return; }
   const item = e.target.closest('[data-item]'); if (item) showItem(item.dataset.item);
   const p = e.target.closest('[data-photo]'); if (p) photo(Number(p.dataset.photo));
