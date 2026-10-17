@@ -500,6 +500,11 @@ body:has(.order-bar:not([hidden])) .toast { bottom: 96px; }
 .video-play:hover .play-mark { scale: 1.08; }
 .play-mark svg { width: 34px; height: 34px; fill: currentColor; stroke: none; margin-left: 4px; }
 .video-credit { margin-top: 10px; }
+.about-owner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.owner-copy p { margin-top: 14px; max-width: 52ch; }
+.video-frame.portrait { aspect-ratio: 9 / 16; width: 100%; max-width: 380px; justify-self: center; }
+.video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+@media (max-width: 760px) { .about-owner { grid-template-columns: 1fr; } .video-frame.portrait { max-width: 340px; } }
 
 
 /* Item view: a large photo beside the details on desktop; stacked on phones. */

@@ -7,7 +7,8 @@ const money = v => new Intl.NumberFormat('en-US', { style: 'currency', currency:
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
 const media = n => '/static/media/' + n;
 // Real photos of Oasis dishes (restaurant Instagram and its printed menu), matched only where the dish is certain.
-const PHOTOS = { 'samarkand-plov': 'plov-dish.webp', 'plov-special': 'plov-dish.webp', 'tandoori-samsa': 'samsa.webp', 'samsa-special': 'samsa.webp', 'lagman': 'lagman.webp', 'shurpa': 'shurpa.webp', 'shish-kebab-special': 'kebab-special.webp' };
+const PHOTOS = { 'samarkand-plov': 'plov-dish.webp', 'plov-special': 'plov-dish.webp', 'tandoori-samsa': 'samsa.webp', 'samsa-special': 'samsa.webp', 'lagman': 'lagman.webp', 'shurpa': 'shurpa.webp', 'shish-kebab-special': 'kebab-special.webp',
+  'lamb': 'dishes/lamb.webp', 'ground-beef': 'dishes/ground-beef.webp', 'beef-roulade': 'dishes/beef-roulade.webp', 'shrimp-kebab': 'dishes/shrimp-kebab.webp', 'lamb-chops': 'dishes/lamb-chops.webp', 'borscht': 'dishes/borscht.webp', 'fried-ravioli-with-beef': 'dishes/fried-ravioli-with-beef.webp', 'baklava': 'dishes/baklava.webp', 'kutabi': 'dishes/kutabi.webp', 'manti': 'dishes/manti.webp', 'shepherd-s-fried-lamb-with-potatoes': 'dishes/shepherd-s-fried-lamb-with-potatoes.webp', 'turkish-fried-liver': 'dishes/turkish-fried-liver.webp' };
 const CATEGORY_PHOTOS = { Mains: 'plov-dish.webp', Kebabs: 'grill.webp', Starters: 'samsa.webp', Salads: 'salad.webp', Soups: 'lagman.webp', Seafood: 'shrimp.webp', 'Lunch Specials': 'kebab-special.webp' };
 // Openly licensed example photos (Wikimedia Commons) for dishes without an Oasis photo yet; credited in the item view.
 const EXAMPLE_PHOTOS = {};
@@ -157,7 +158,7 @@ function home() {
 }
 // Background clips play one after another (a single clip just loops). The pause control is
 // visually hidden until it receives keyboard focus, so it stays available without showing on screen.
-const HERO_CLIPS = [{ src: 'plov.mp4', poster: 'plov.webp' }];
+const HERO_CLIPS = [{ src: 'plov.mp4', poster: 'plov.webp' }, { src: 'grill.mp4', poster: 'grill-poster.webp' }, { src: 'tandoor.mp4', poster: 'tandoor-poster.webp' }];
 function heroPlaylist() {
   const videos = $$('#hero-videos video'), toggle = $('#video-toggle');
   let current = 0, paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -299,6 +300,10 @@ function about() {
   <section class="section about-cuisine" aria-labelledby="cuisine-title">
     <div class="section-heading"><h2 id="cuisine-title">The Uzbek table</h2><p>Uzbek cooking grew along the Silk Road, where Persian, Turkic and Chinese traditions met. It is generous food built for sharing, centred on lamb, rice, bread and fresh herbs.</p></div>
     <div class="cuisine-grid">${UZBEK_TABLE.map(([img, name, text]) => `<article class="cuisine-card"><img src="${media(img)}" alt="${esc(name)}" loading="lazy"><div><h3>${esc(name)}</h3><p>${esc(text)}</p></div></article>`).join('')}</div>
+  </section>
+  <section class="section about-owner" aria-labelledby="owner-title">
+    <div class="owner-copy"><h2 id="owner-title">Meet the owner</h2><p>Local food creator Gene Drubetskoy stopped by to catch up with our owner, Shabbos, try the kebabs, Samarkand plov, tandoori bread and samsa, and take a look behind the scenes in the kitchen.</p><p class="help video-credit">Video: <a href="https://www.instagram.com/genedru/reel/DJ636EZxwN1/" target="_blank" rel="noreferrer">@genedru on Instagram</a></p></div>
+    <div class="video-frame portrait"><video controls playsinline preload="none" poster="${media('owner-poster.webp')}" aria-label="Meet the owner of Oasis"><source src="${media('owner.mp4')}" type="video/mp4"></video></div>
   </section>
   <section class="section about-video" aria-labelledby="video-title">
     <div class="section-heading"><h2 id="video-title">Inside Oasis</h2><p>Take a walk through the dining room.</p></div>
