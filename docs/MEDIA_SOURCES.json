@@ -61,13 +61,13 @@
   {
     "file": "plov.mp4",
     "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
-    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt at 720 x 990 (H.264 CRF 28); no generated pixels",
+    "transformation": "Original footage (caption cropped out); the calmest 10 seconds (6-16s) slowed to ~70% with motion-interpolated frames at 30 fps and blended end-to-start into a seamless 12.9-second loop; no generated content beyond interpolated in-between frames",
     "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
   },
   {
     "file": "plov.webp",
     "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
-    "transformation": "Original footage; fixed crop excludes bottom caption; silent 28-second video excerpt / poster frame at 12 seconds; no generated pixels",
+    "transformation": "First frame of the hero loop, used as its poster",
     "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
   },
   {
@@ -75,5 +75,160 @@
     "source": "https://www.instagram.com/p/C1z2xlPLGG9/",
     "transformation": "Direct frame at 8 seconds from original video, fixed crop excludes burned caption; no generated pixels",
     "original_sha256": "ce0cd59641e25f96fd165ac8d2733895feff810b02febd392376b7fde48e0ca9"
+  },
+  {
+    "file": "bg-pattern.webp",
+    "source": "https://oasiskebabhouse.com/images/bg-pattern.jpg",
+    "transformation": "Seamless 519x567 tile cropped from the restaurant site's background pattern; WebP"
+  },
+  {
+    "file": "mandala.webp",
+    "source": "https://oasiskebabhouse.com/images/overlay-mandala.png",
+    "transformation": "Restaurant site's mandala ornament, trimmed and resized to 560px; WebP with alpha"
+  },
+  {
+    "file": "lagman.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Lagman photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "shurpa.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Shurpa photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "salad.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Salad photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "kebab-special.webp",
+    "source": "https://oasiskebabhouse.com/images/temp-menu-04172024.jpg",
+    "transformation": "Shish kebab with rice photo cropped from the round dish photos on the restaurant's printed menu, resized to 300px; no generated pixels"
+  },
+  {
+    "file": "about-video.webp",
+    "source": "https://www.youtube.com/watch?v=72h_LgxQ5W4",
+    "transformation": "YouTube thumbnail for the embedded video, WebP"
+  },
+  {
+    "file": "dishes/lamb.webp",
+    "source": "https://www.yelp.com/biz_photos/oasis-uzbek-kebab-house-baltimore?select=tdFTaxzAOTE9lAKJSlA4Pw",
+    "label": "Yelp label: Lamb Kebab",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "b0ca5f38d5cebacdc09e580263cfa209ebac5b4562670766e61f92562d0e4079"
+  },
+  {
+    "file": "dishes/ground-beef.webp",
+    "source": "https://local.yahoo.com/info-229490624-oasis-uzbek-kebab-house-pikesville",
+    "label": "Yelp label: Beef Roulade, Lam, and Ground Beef kebabs",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "20a5d5a1d54fc2057353566e7b84bc0190bbd0b2d1b793416f986cd59eff8ad8"
+  },
+  {
+    "file": "dishes/beef-roulade.webp",
+    "source": "https://local.yahoo.com/info-229490624-oasis-uzbek-kebab-house-pikesville",
+    "label": "Yelp label: Beef Roulade and Ground beef",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "019597af77a1ff5586b64c2a2123df82e6f7ad4e9c12409c966f8f6c97e6f3be"
+  },
+  {
+    "file": "dishes/shrimp-kebab.webp",
+    "source": "https://www.instagram.com/oasiskebabhouse/p/CAmNf6agcr4/",
+    "label": "Restaurant Instagram: shrimp skewers on the grill (visual identification)",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "e8ca4fb88b22e50d41a328f621a8b3e624d59254e44141d23784286e5c97b7fc"
+  },
+  {
+    "file": "dishes/lamb-chops.webp",
+    "source": "https://www.instagram.com/oasiskebabhouse/p/CDFcEOjDS2g/",
+    "label": "Restaurant Instagram: lamb chop platter (visual identification)",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "91b4043c31cfad7ecd5aca195de16730ac4623a9536a8a10dc6be8fc2e9c3cf5"
+  },
+  {
+    "file": "dishes/borscht.webp",
+    "source": "https://local.yahoo.com/info-229490624-oasis-uzbek-kebab-house-pikesville",
+    "label": "Yelp label: Borscht",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "1de6e252efaa66a9723228952ec23f568a62993aaac8765e481d43ce02940bfe"
+  },
+  {
+    "file": "dishes/fried-ravioli-with-beef.webp",
+    "source": "https://local.yahoo.com/info-229490624-oasis-uzbek-kebab-house-pikesville",
+    "label": "Yelp label: Shurpa and Fried Ravioli with Beef",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "2ff97255b3d3db56f40bba0b70cad91d109c0350ba52fc1ff26eed4b544627fc"
+  },
+  {
+    "file": "dishes/baklava.webp",
+    "source": "https://local.yahoo.com/info-229490624-oasis-uzbek-kebab-house-pikesville",
+    "label": "Yelp label: Baklava",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "fbd4f680d23d674ce6ea68b6151cd0f1767474ad762da4ab02d74bcbd11ecb76"
+  },
+  {
+    "file": "dishes/kutabi.webp",
+    "source": "https://www.yelp.com/biz_photos/oasis-uzbek-kebab-house-baltimore?select=JB7ByYJ-bAcGkV0pzKFF-Q",
+    "label": "Yelp label: Kutabi",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "df7c1015f69ede02dc9e7c6900d41613997be29909322cb409a95eb11fe98a19"
+  },
+  {
+    "file": "dishes/manti.webp",
+    "source": "https://www.instagram.com/oasiskebabhouse/p/Cyyejm6rVO2/",
+    "label": "Restaurant caption: Manti! Fresh salad with shrimp (cropped to the manti)",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "9aa6de1452223d1b78cbd6f6a5611112347723f98802ec4fbb6cdfa1eb513859"
+  },
+  {
+    "file": "dishes/shepherd-s-fried-lamb-with-potatoes.webp",
+    "source": "https://www.instagram.com/oasiskebabhouse/p/CaUwiQzrOoF/",
+    "label": "Restaurant caption: Shephard’s Fried Lamb Chops!",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "bde0b225329d3c29f32fd01a0ef1ba043c2019b345e9f3d142904e53bb507156"
+  },
+  {
+    "file": "dishes/turkish-fried-liver.webp",
+    "source": "https://www.instagram.com/oasiskebabhouse/p/CAwI3zYDB98/",
+    "label": "Restaurant caption: New menu item! Turkish fried liver!",
+    "transformation": "EXIF orientation, 4:5 crop, resize to 720x900, WebP compression; no generated pixels",
+    "original_sha256": "dc5b46cd6db56e505c56c1514c3c1a725325c7e595ff7217ed84526d49c8eec0"
+  },
+  {
+    "file": "grill.mp4",
+    "source": "https://www.facebook.com/100031887082095/videos/1018417389444131/",
+    "transformation": "Trimmed 19.8–26.6 s, centre-cropped to 720x990, H.264 re-encode, audio removed; no generated pixels",
+    "original_sha256": "0a4e16b7c645890e1f9b505bf83bd9bf8143cab942d7c771d0a743cb949dd2ad"
+  },
+  {
+    "file": "grill-poster.webp",
+    "source": "https://www.facebook.com/100031887082095/videos/1018417389444131/",
+    "transformation": "Frame from grill.mp4, WebP compression",
+    "original_sha256": "0a4e16b7c645890e1f9b505bf83bd9bf8143cab942d7c771d0a743cb949dd2ad"
+  },
+  {
+    "file": "tandoor.mp4",
+    "source": "https://www.instagram.com/p/Cy_NdCmLYBN/",
+    "transformation": "Trimmed 17.0–25.0 s, centre-cropped to 720x990, H.264 re-encode, audio removed; no generated pixels",
+    "original_sha256": "62eda42889a3a42a1b22633370ec14d27291c1cd4c2e9eb3ab4b57afba86ef93"
+  },
+  {
+    "file": "tandoor-poster.webp",
+    "source": "https://www.instagram.com/p/Cy_NdCmLYBN/",
+    "transformation": "Frame from tandoor.mp4, WebP compression",
+    "original_sha256": "62eda42889a3a42a1b22633370ec14d27291c1cd4c2e9eb3ab4b57afba86ef93"
+  },
+  {
+    "file": "owner.mp4",
+    "source": "https://www.instagram.com/p/DJ636EZxwN1/",
+    "transformation": "Full length, scaled to 540x960, H.264/AAC re-encode; third-party creator Gene Drubetskoy (@genedru) visiting the owner",
+    "original_sha256": "4821ffcfe1b3b0f36f866949f739ccbff58be2e95b9f9bf8604cb7b96e0a8ea3"
+  },
+  {
+    "file": "owner-poster.webp",
+    "source": "https://www.instagram.com/p/DJ636EZxwN1/",
+    "transformation": "Frame from owner.mp4, WebP compression",
+    "original_sha256": "4821ffcfe1b3b0f36f866949f739ccbff58be2e95b9f9bf8604cb7b96e0a8ea3"
   }
 ]

@@ -46,3 +46,17 @@ Container evidence (cloud session, Docker 29.3.1, revision 99afe3d): the reposit
 Simplification pass (after PR #4 merged): removed the blurred canvas backdrop and repeated hours/status/address blocks. Playwright order and reservation flows at 1440 and 390px, the overflow sweep at 320–1280px and the 18 app tests pass locally. Instagram, Yelp, oasiskebabhouse.com and reference restaurant sites remained blocked by the session network policy.
 
 Essentials-only pass: removed decorative/story sections and duplicate navigation. Same Playwright flows (1440/390px), overflow sweep and 18 app tests pass locally. Yelp remained blocked by the session network policy, so no Yelp photos were added.
+
+Full-screen hero pass: Playwright order and reservation flows (1440/390px), overflow sweep at 320–1280px and the 18 app tests pass locally. The headless test browser cannot decode H.264, so the motion check used a temporary WebM copy served only to the test browser; the site still ships plov.mp4.
+
+Whole-video hero, menu photos and scroll fix: a wheel-scroll probe on /menu previously stepped backwards (368→335, 1072→1070 …) on desktop; after the fix every page scrolls in full 400px steps at 1440 and 390px. Same order/reservation flows, overflow sweep and 18 app tests pass locally.
+
+Motion pass: reveal-on-scroll verified with real wheel scrolling (all revealed blocks reach their visible state at 1440 and 390px); scroll probe still steps a full 400px everywhere; order/reservation flows, overflow sweep and 18 app tests pass.
+
+Menu panel / full-screen hero pass: category jumps measured at 16px below the header for Soups, Desserts, Kebabs and Lunch Specials on desktop (20px below the floating button on phones); + button centre unchanged on hover; panel collapses to 52px and expands to 236px; pickup note removed. Order/reservation flows, scroll probe, overflow sweep and 18 app tests pass locally.
+
+Checkout button pass: button hidden with an empty order, shows "2 Checkout $12.00" after two adds, navigates to checkout and hides there; header-to-first-category gap 28px on desktop. Category jumps, order/reservation flows, scroll probe, overflow sweep and 18 app tests pass locally. Yelp pages, photo CDN and the web fetcher all returned 403.
+
+About page: /about added to the server routes and the no-admin-link test (18 pass); overflow sweep now includes /about. Instagram's logged-out profile page is an empty app shell and its profile data endpoint requires login, so no additional Instagram posts or videos were collected.
+
+Calm hero / item view / About video: motion energy measured 14.93 -> 7.03 per frame (53% less) and loop seam 7.34 vs 6.13 typical frame step; item view measured 960x560 with the photo filling its half. Order/reservation flows, category jumps, scroll probe, overflow sweep and 18 app tests pass locally.

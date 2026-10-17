@@ -6,7 +6,13 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const money = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v / 100);
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
 const media = n => '/static/media/' + n;
-const dishPhoto = i => media(i.id === 'samarkand-plov' ? 'plov-dish.webp' : i.image);
+// Real photos of Oasis dishes (restaurant Instagram and its printed menu), matched only where the dish is certain.
+const PHOTOS = { 'samarkand-plov': 'plov-dish.webp', 'plov-special': 'plov-dish.webp', 'tandoori-samsa': 'samsa.webp', 'samsa-special': 'samsa.webp', 'lagman': 'lagman.webp', 'shurpa': 'shurpa.webp', 'shish-kebab-special': 'kebab-special.webp',
+  'lamb': 'dishes/lamb.webp', 'ground-beef': 'dishes/ground-beef.webp', 'beef-roulade': 'dishes/beef-roulade.webp', 'shrimp-kebab': 'dishes/shrimp-kebab.webp', 'lamb-chops': 'dishes/lamb-chops.webp', 'borscht': 'dishes/borscht.webp', 'fried-ravioli-with-beef': 'dishes/fried-ravioli-with-beef.webp', 'baklava': 'dishes/baklava.webp', 'kutabi': 'dishes/kutabi.webp', 'manti': 'dishes/manti.webp', 'shepherd-s-fried-lamb-with-potatoes': 'dishes/shepherd-s-fried-lamb-with-potatoes.webp', 'turkish-fried-liver': 'dishes/turkish-fried-liver.webp' };
+const CATEGORY_PHOTOS = { Mains: 'plov-dish.webp', Kebabs: 'grill.webp', Starters: 'samsa.webp', Salads: 'salad.webp', Soups: 'lagman.webp', Seafood: 'shrimp.webp', 'Lunch Specials': 'kebab-special.webp' };
+// Openly licensed example photos (Wikimedia Commons) for dishes without an Oasis photo yet; credited in the item view.
+const EXAMPLE_PHOTOS = {};
+const dishPhoto = i => PHOTOS[i.id] ? media(PHOTOS[i.id]) : EXAMPLE_PHOTOS[i.id] ? media('examples/' + EXAMPLE_PHOTOS[i.id].file) : i.image ? media(i.image) : '';
 const PHONE = '410-777-9700', TEL = 'tel:+14107779700';
 const maps = 'https://www.google.com/maps/search/?api=1&query=Oasis+Uzbek+Kebab+House+1430+Reisterstown+Rd+Pikesville+MD';
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -86,8 +92,8 @@ function addLine(i, quantity = 1, choices = {}) {
   if (line && line.quantity + quantity > 20) { toast('Maximum 20 of each item.'); return false; }
   if (line) line.quantity += quantity; else bag.push({ id: i.id, quantity, choices });
   persistBag();
-  const b = $('#open-bag'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump');
-  toast(`${i.name} added`, '<button type="button" class="toast-action" data-open-bag>View order</button>');
+  for (const b of [$('#open-bag'), $('#order-bar')]) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+  toast(`${i.name} added`);
   return true;
 }
 function totalHTML() {
@@ -98,26 +104,28 @@ function bagHTML() {
   if (!bag.length) return '<div class="empty-bag"><p>Your order is empty.</p><p class="help">Add a few dishes from the menu to get started.</p></div>';
   return '<ul class="line-items">' + bag.map((l, n) => {
     const i = items.find(i => i.id === l.id), choices = Object.values(l.choices || {});
-    return `<li class="line-item">${i.image ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}<div class="line-body"><h3>${esc(i.name)}</h3>${choices.length ? `<p>${choices.map(esc).join(' · ')}</p>` : ''}<div class="quantity"><button type="button" data-quantity="${n}" data-delta="-1" aria-label="${l.quantity === 1 ? 'Remove' : 'Remove one'} ${esc(i.name)}">${l.quantity === 1 ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2m-7 0 1 12h8l1-12"/></svg>' : '−'}</button><span aria-label="Quantity">${l.quantity}</span><button type="button" data-quantity="${n}" data-delta="1" aria-label="Add one ${esc(i.name)}" ${l.quantity >= 20 ? 'disabled' : ''}>+</button></div></div><span class="line-price">${money(linePrice(l) * l.quantity)}</span></li>`;
+    return `<li class="line-item">${dishPhoto(i) ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}<div class="line-body"><h3>${esc(i.name)}</h3>${choices.length ? `<p>${choices.map(esc).join(' · ')}</p>` : ''}<div class="quantity"><button type="button" data-quantity="${n}" data-delta="-1" aria-label="${l.quantity === 1 ? 'Remove' : 'Remove one'} ${esc(i.name)}">${l.quantity === 1 ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2m-7 0 1 12h8l1-12"/></svg>' : '−'}</button><span aria-label="Quantity">${l.quantity}</span><button type="button" data-quantity="${n}" data-delta="1" aria-label="Add one ${esc(i.name)}" ${l.quantity >= 20 ? 'disabled' : ''}>+</button></div></div><span class="line-price">${money(linePrice(l) * l.quantity)}</span></li>`;
   }).join('') + '</ul>';
 }
 function openBag() {
-  $('#bag-content').innerHTML = `<div class="drawer-body">${pickupNote()}${bagHTML()}</div><div class="drawer-foot">${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : `<a class="button primary block" href="/menu">Browse the menu ${arrow}</a>`}</div>`;
+  $('#bag-content').innerHTML = `<div class="drawer-body">${bagHTML()}</div><div class="drawer-foot">${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : `<a class="button primary block" href="/menu">Browse the menu ${arrow}</a>`}</div>`;
   if (!$('#bag-dialog').open) $('#bag-dialog').showModal();
 }
-function pickupNote() { return `<p class="pickup-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>Pickup at 1430 Reisterstown Rd · ready in about ${config.settings.pickup_lead} min · pay in store</span></p>`; }
 function updateOrderSummaries() {
   const count = bagCount(), bar = $('#order-bar');
-  if (bar) { bar.hidden = !count; bar.innerHTML = `<span class="order-bar-count">${count}</span><strong>View order</strong><span>${money(totals().total)}</span>`; }
-  const side = $('#menu-cart');
-  if (side) side.innerHTML = `<h2>Your order</h2>${pickupNote()}${bagHTML()}${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : ''}`;
+  // Floating checkout button: only when the order has something in it, and never on checkout or status pages.
+  if (bar) {
+    const show = count > 0 && !/^\/(checkout|order\/|reservation\/|admin)/.test(location.pathname);
+    bar.hidden = !show;
+    bar.innerHTML = `<span class="order-bar-count">${count}</span><strong>Checkout</strong><span class="order-bar-total">${money(totals().total)}</span>${arrow}`;
+    bar.setAttribute('aria-label', `Checkout, ${count} ${count === 1 ? 'item' : 'items'}, ${money(totals().total)}`);
+  }
   $$('[data-in-bag]').forEach(el => { const q = bag.filter(l => l.id === el.dataset.inBag).reduce((n, l) => n + l.quantity, 0); el.textContent = q ? q + ' in order' : ''; });
   if ($('#checkout-bag') && bag.length) $('#checkout-bag').innerHTML = bagHTML() + totalHTML();
   if ($('#place-total')) $('#place-total').textContent = money(totals().total);
 }
 
 /* ---------- Shared bits ---------- */
-function demoNote() { return config.demo ? '<p class="demo-note">Website preview — orders and table requests here are tests and are not sent to the kitchen.</p>' : ''; }
 function head(title, kicker = 'Oasis Uzbek Kebab House', description = '') {
   return `<header class="page-head"><h1>${esc(title)}</h1>${description ? `<p class="lede">${esc(description)}</p>` : ''}</header>`;
 }
@@ -131,33 +139,39 @@ function dishCard(i) {
 /* ---------- Home ---------- */
 function home() {
   document.body.classList.add('home');
-  const signature = items.filter(i => i.image);
+  const signature = ['samarkand-plov', 'lagman', 'tandoori-samsa', 'shish-kebab-special'].map(id => items.find(i => i.id === id)).filter(Boolean);
   $('#main').innerHTML = `
   <section class="hero" aria-label="Welcome to Oasis">
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <h1>Oasis Uzbek Kebab House</h1>
-        <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
-        <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
-      </div>
-      <figure class="hero-media">
-        <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
-        <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
-      </figure>
+    <div class="hero-videos" id="hero-videos" aria-hidden="true">${HERO_CLIPS.map((c, n) => `<video muted playsinline preload="${n ? 'none' : 'auto'}" ${HERO_CLIPS.length === 1 ? 'loop' : ''} poster="${media(c.poster)}"${n ? '' : ' class="on"'}><source src="${media(c.src)}" type="video/mp4"></video>`).join('')}</div>
+    <div class="hero-copy">
+      <h1>Oasis Uzbek Kebab House</h1>
+      <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
+      <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
     </div>
+    <button class="video-toggle" id="video-toggle" type="button">Pause background video</button>
   </section>
-  <section class="band band-sand">
-    <div class="section">
-      <div class="section-heading"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
-      <div class="dish-grid">${signature.map(dishCard).join('')}</div>
-    </div>
+  <section class="section popular">
+    <div class="section-heading"><img class="ornament" src="${media('mandala.webp')}" alt="" width="96" height="96"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
+    <div class="dish-grid">${signature.map(dishCard).join('')}</div>
   </section>`;
-  const video = $('#hero-video'), toggle = $('#video-toggle');
-  const update = () => { toggle.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video'); toggle.innerHTML = video.paused ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>' : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'; };
-  video.addEventListener('play', update); video.addEventListener('pause', update);
-  toggle.addEventListener('click', () => video.paused ? video.play().catch(() => toast('The video is unavailable.')) : video.pause());
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) video.play().catch(() => {});
-  update();
+  heroPlaylist();
+}
+// Background clips play one after another (a single clip just loops). The pause control is
+// visually hidden until it receives keyboard focus, so it stays available without showing on screen.
+const HERO_CLIPS = [{ src: 'plov.mp4', poster: 'plov.webp' }, { src: 'grill.mp4', poster: 'grill-poster.webp' }, { src: 'tandoor.mp4', poster: 'tandoor-poster.webp' }];
+function heroPlaylist() {
+  const videos = $$('#hero-videos video'), toggle = $('#video-toggle');
+  let current = 0, paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const play = v => { if (!paused) v.play().catch(() => {}); };
+  videos.forEach((v, n) => v.addEventListener('ended', () => {
+    if (videos.length < 2) return;
+    const next = videos[(n + 1) % videos.length];
+    next.currentTime = 0; next.preload = 'auto'; play(next);
+    next.classList.add('on'); v.classList.remove('on'); current = (n + 1) % videos.length;
+  }));
+  const label = () => { toggle.textContent = paused ? 'Play background video' : 'Pause background video'; };
+  toggle.addEventListener('click', () => { paused = !paused; paused ? videos[current].pause() : play(videos[current]); label(); });
+  label(); play(videos[0]);
 }
 
 /* ---------- Menu ---------- */
@@ -167,43 +181,86 @@ function menuPage() {
   const categories = [...new Set(items.map(i => i.category))];
   const closed = !config.settings.accept_orders;
   $('#main').innerHTML = `
-  <div class="menu-top"><h1>Menu</h1></div>
+  <h1 class="visually-hidden">Menu</h1>
   ${closed ? '<p class="notice">Online pickup orders are paused right now. Please call <a href="' + TEL + '">' + PHONE + '</a>.</p>' : ''}
-  <div class="menu-tools"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
-  <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav></div>
-  <div class="ordering-layout"><div class="ordering-main">${demoNote()}<div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div><aside class="menu-cart" id="menu-cart" aria-label="Your order"></aside></div>
-  <button class="order-bar" id="order-bar" type="button" hidden></button>`;
+  <div class="ordering-layout">
+    <aside class="menu-side" id="menu-side" aria-label="Browse the menu">
+      <div class="menu-side-head"><span>Menu</span><button class="icon-button side-toggle" id="side-toggle" type="button" aria-expanded="true" aria-controls="menu-side-body" aria-label="Hide menu sections"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button></div>
+      <div class="menu-side-body" id="menu-side-body">
+        <label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
+        <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav>
+      </div>
+    </aside>
+    <div class="ordering-main"><button class="icon-button browse-button" id="browse-button" type="button" aria-controls="menu-side" aria-expanded="false" aria-label="Menu sections and search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div>
+  </div>
+`;
   drawMenu(); updateOrderSummaries();
   $('#menu-search').addEventListener('input', e => { search = e.target.value; drawMenu(); });
-  $('#order-bar').addEventListener('click', openBag);
   $('.category-tabs').addEventListener('click', e => {
     const a = e.target.closest('a'); if (!a) return;
+    e.preventDefault();
     if (search) { search = ''; $('#menu-search').value = ''; drawMenu(); }
-    setActiveTab(a.hash.slice(1));
+    setSideOpen(false);
+    jumpTo(a.hash.slice(1));
   });
+  // Desktop: the panel collapses to a slim rail (remembered). Phones: it slides in over the menu.
+  const side = $('#menu-side'), toggle = $('#side-toggle');
+  const setCollapsed = c => { document.body.classList.toggle('side-collapsed', c); toggle.setAttribute('aria-expanded', String(!c)); toggle.setAttribute('aria-label', c ? 'Show menu sections' : 'Hide menu sections'); try { localStorage.setItem('oasis-side', c ? 'closed' : 'open'); } catch {} };
+  // Collapsed by default; stays open only if the guest opened it last time.
+  let stored = null; try { stored = localStorage.getItem('oasis-side'); } catch {}
+  setCollapsed(stored !== 'open');
+  toggle.addEventListener('click', () => matchMedia('(max-width: 860px)').matches ? setSideOpen(false) : setCollapsed(!document.body.classList.contains('side-collapsed')));
+  // Opening moves focus to the close button, not the search field, so phones don't pop up the keyboard.
+  $('#browse-button').addEventListener('click', () => { setSideOpen(true); toggle.focus({ preventScroll: true }); });
+  side.addEventListener('keydown', e => { if (e.key === 'Escape') { setSideOpen(false); $('#browse-button').focus({ preventScroll: true }); } });
+  document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('#menu-side, #browse-button')) setSideOpen(false); });
   const selected = new URLSearchParams(location.search).get('item');
   if (selected) showItem(selected);
+}
+function setSideOpen(open) {
+  document.body.classList.toggle('side-open', open);
+  $('#browse-button')?.setAttribute('aria-expanded', String(open));
+  syncScrollLock();
+}
+// While the phone menu panel or any dialog is open, only that layer scrolls; the page underneath stays put.
+function syncScrollLock() {
+  const locked = (document.body.classList.contains('side-open') && !!$('#menu-side')) || !!$('dialog[open]');
+  document.documentElement.classList.toggle('scroll-locked', locked);
+}
+new MutationObserver(syncScrollLock).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+// Scroll so the category heading sits just below the sticky header, then hold the highlight
+// on the chosen category until the smooth scroll settles.
+let jumping = 0;
+function jumpTo(id) {
+  const el = document.getElementById(id); if (!el) return;
+  const browse = $('#browse-button'), floating = browse && getComputedStyle(browse).display !== 'none' ? browse.offsetHeight + 14 : 0;
+  const top = el.getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - floating - 16;
+  setActiveTab(id); jumping = Date.now();
+  scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  history.replaceState(null, '', '#' + id);
 }
 function setActiveTab(id) {
   $$('.category-tabs a').forEach(a => {
     const active = a.hash === '#' + id;
     a.classList.toggle('active', active);
-    if (active) { a.setAttribute('aria-current', 'true'); a.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } else a.removeAttribute('aria-current');
+    if (!active) { a.removeAttribute('aria-current'); return; }
+    a.setAttribute('aria-current', 'true');
+
   });
 }
 function menuRow(i) {
-  return `<article class="menu-row${i.available ? '' : ' unavailable'}"><button class="menu-row-main" type="button" data-item="${i.id}"><span class="menu-row-text"><span class="menu-row-name">${esc(i.name)}</span>${i.description ? `<span class="dish-description">${esc(i.description)}</span>` : ''}<span class="menu-row-meta"><span class="price">${i.available ? money(i.price) : 'Unavailable'}</span>${i.options.length ? '<span class="choice-tag">Choices</span>' : ''}<span class="in-bag" data-in-bag="${i.id}"></span></span></span>${i.image ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}</button>${addButton(i)}</article>`;
+  return `<article class="menu-row${i.available ? '' : ' unavailable'}"><button class="menu-row-main" type="button" data-item="${i.id}"><span class="menu-row-text"><span class="menu-row-name">${esc(i.name)}</span>${i.description ? `<span class="dish-description">${esc(i.description)}</span>` : ''}<span class="menu-row-meta"><span class="price">${i.available ? money(i.price) : 'Unavailable'}</span>${i.options.length ? '<span class="choice-tag">Choices</span>' : ''}<span class="in-bag" data-in-bag="${i.id}"></span></span></span>${dishPhoto(i) ? `<img src="${dishPhoto(i)}" alt="" loading="lazy">` : ''}</button>${addButton(i)}</article>`;
 }
 function drawMenu() {
   const q = search.trim().toLowerCase();
   const shown = items.filter(i => (i.name + ' ' + i.description + ' ' + i.category).toLowerCase().includes(q));
   const categories = [...new Set(shown.map(i => i.category))];
   $('#menu-grid').innerHTML = shown.length
-    ? categories.map(c => `<section class="menu-category" id="${categoryId(c)}"><h2>${esc(c)}</h2><div class="menu-list">${shown.filter(i => i.category === c).map(menuRow).join('')}</div></section>`).join('')
+    ? categories.map(c => `<section class="menu-category" id="${categoryId(c)}"><h2>${CATEGORY_PHOTOS[c] ? `<img src="${media(CATEGORY_PHOTOS[c])}" alt="" loading="lazy">` : ''}${esc(c)}</h2><div class="menu-list">${shown.filter(i => i.category === c).map(menuRow).join('')}</div></section>`).join('')
     : `<p class="empty" role="status">No dishes match “${esc(search)}”.</p>`;
   updateOrderSummaries();
   menuObserver?.disconnect();
-  menuObserver = new IntersectionObserver(entries => { const hit = entries.find(e => e.isIntersecting); if (hit) setActiveTab(hit.target.id); }, { rootMargin: '-160px 0px -65% 0px' });
+  menuObserver = new IntersectionObserver(entries => { const hit = entries.find(e => e.isIntersecting); if (hit && Date.now() - jumping > 900) setActiveTab(hit.target.id); }, { rootMargin: '-100px 0px -65% 0px' });
   $$('.menu-category').forEach(s => menuObserver.observe(s));
 }
 function quickAdd(id) {
@@ -213,7 +270,8 @@ function quickAdd(id) {
 }
 function showItem(id) {
   const i = items.find(i => i.id === id); if (!i) return;
-  $('#item-content').innerHTML = `${i.image ? `<img class="dialog-image" src="${dishPhoto(i)}" alt="${esc(i.name)}">` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add to order' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form>`;
+  const photo = dishPhoto(i), credit = EXAMPLE_PHOTOS[i.id];
+  $('#item-content').innerHTML = `<div class="item-sheet${photo ? ' has-photo' : ''}">${photo ? `<figure class="item-media"><img class="dialog-image" src="${photo}" alt="${esc(i.name)}">${credit ? `<figcaption>Example photo · <a href="${credit.page}" target="_blank" rel="noreferrer">${esc(credit.credit)}</a></figcaption>` : ''}</figure>` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add<span class="long-label"> to order</span>' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form></div>`;
   let quantity = 1; const form = $('#add-item');
   function recalc() {
     const f = new FormData(form), extra = i.options.filter((o, n) => String(f.get('option-' + n)).endsWith('(+$1)')).length * 100;
@@ -229,6 +287,50 @@ function showItem(id) {
     if (addLine(i, quantity, choices)) $('#item-dialog').close();
   });
   $('#item-dialog').showModal();
+}
+
+/* ---------- About ---------- */
+// Facts about the restaurant come only from what it publishes (menu, sign, photos); the cuisine notes are general.
+const UZBEK_TABLE = [
+  ['plov-dish.webp', 'Plov', 'Uzbekistan’s national dish: rice, lamb, beef and yellow carrots cooked slowly in a cast-iron kazan. Palov culture is on UNESCO’s list of Intangible Cultural Heritage. Ours is Samarkand style.'],
+  ['samsa.webp', 'Samsa', 'Flaky pastry filled with chopped beef and onion, baked against the hot clay walls of a tandoor until the shell blisters and crisps.'],
+  ['lagman.webp', 'Lagman', 'Long homemade noodles under a rich stew of beef, peppers and vegetables, a Silk Road dish shared across Central Asia.'],
+  ['grill.webp', 'Kebabs', 'Shashlik: skewers of lamb, beef and chicken turned over charcoal until smoky at the edges.'],
+  ['bread.webp', 'Non', 'Round bread stamped in the centre and traditionally baked in a tandoor. At an Uzbek table it is broken by hand and shared first.'],
+  ['shurpa.webp', 'Shurpa', 'A clear, slow-simmered lamb and beef soup with whole carrots, potatoes and chickpeas, finished with fresh dill.'],
+];
+function about() {
+  $('#main').innerHTML = `
+  <section class="about-intro">
+    <div class="about-copy">
+      <img class="ornament" src="${media('mandala.webp')}" alt="" width="80" height="80">
+      <h1>About Oasis</h1>
+      <p class="lede">A halal Uzbek kitchen on Reisterstown Road in Pikesville, cooking the dishes of Samarkand and the Silk Road: plov from the kazan, samsa from the tandoor and kebabs over charcoal.</p>
+      <p>Join us in the dining room under carved wooden screens, sit out on the patio, or order pickup and take the meal home.</p>
+      <div class="hero-actions"><a class="button primary" href="/menu">See the menu ${arrow}</a><a class="button" href="/reserve">Reserve a table</a></div>
+    </div>
+    <figure class="about-photo"><img src="${media('interior.webp')}" alt="The Oasis dining room with carved Uzbek wooden screens"></figure>
+  </section>
+  <section class="section about-cuisine" aria-labelledby="cuisine-title">
+    <div class="section-heading"><h2 id="cuisine-title">The Uzbek table</h2><p>Uzbek cooking grew along the Silk Road, where Persian, Turkic and Chinese traditions met. It is generous food built for sharing, centred on lamb, rice, bread and fresh herbs.</p></div>
+    <div class="cuisine-grid">${UZBEK_TABLE.map(([img, name, text]) => `<article class="cuisine-card"><img src="${media(img)}" alt="${esc(name)}" loading="lazy"><div><h3>${esc(name)}</h3><p>${esc(text)}</p></div></article>`).join('')}</div>
+  </section>
+  <section class="section about-owner" aria-labelledby="owner-title">
+    <div class="owner-copy"><h2 id="owner-title">Meet the owner</h2><p>Local food creator Gene Drubetskoy stopped by to catch up with our owner, Shabbos, try the kebabs, Samarkand plov, tandoori bread and samsa, and take a look behind the scenes in the kitchen.</p><p class="help video-credit">Video: <a href="https://www.instagram.com/genedru/reel/DJ636EZxwN1/" target="_blank" rel="noreferrer">@genedru on Instagram</a></p></div>
+    <div class="video-frame portrait"><video controls playsinline preload="none" poster="${media('owner-poster.webp')}" aria-label="Meet the owner of Oasis"><source src="${media('owner.mp4')}" type="video/mp4"></video></div>
+  </section>
+  <section class="section about-video" aria-labelledby="video-title">
+    <div class="section-heading"><h2 id="video-title">Inside Oasis</h2><p>Take a walk through the dining room.</p></div>
+    <div class="video-frame" id="about-video"><button type="button" class="video-play" aria-label="Play the Inside Oasis video (YouTube)"><img src="${media('about-video.webp')}" alt="" loading="lazy"><span class="play-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
+    <p class="help video-credit">Video: <a href="https://www.youtube.com/watch?v=72h_LgxQ5W4" target="_blank" rel="noreferrer">Oasis Uzbek Kebab House on YouTube</a></p>
+  </section>
+  <section class="section about-dastarkhan">
+    <div class="dastarkhan-copy"><h2>The dastarkhan</h2><p>In Uzbekistan a meal is laid out as a <em>dastarkhan</em>: the whole table set at once with bread, salads, fruit and pots of green tea, before the hot dishes arrive. Guests are welcomed first and fed generously. That spirit of hospitality is what we bring to every table.</p></div>
+    <div class="about-strip">${[4, 7, 2].map(n => { const [img, label] = galleries[n]; return `<button type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"></button>`; }).join('')}</div>
+  </section>`;
+  $('#about-video .video-play').addEventListener('click', () => {
+    $('#about-video').innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/72h_LgxQ5W4?autoplay=1&rel=0" title="Inside Oasis" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  });
 }
 
 /* ---------- Gallery & visit ---------- */
@@ -294,7 +396,7 @@ async function loadSlots(reserve, auto = false) {
 }
 function reservation() {
   const max = config.settings.max_party;
-  $('#main').innerHTML = head('Reserve a table') + `<div class="page-content">${demoNote()}<div class="booking-layout">
+  $('#main').innerHTML = head('Reserve a table') + `<div class="page-content"><div class="booking-layout">
   <form class="form-card" id="request-form" novalidate>
     ${config.settings.accept_reservations ? '' : `<p class="notice">Online table requests are paused. Please call <a href="${TEL}">${PHONE}</a>.</p>`}
     <div class="form-step"><h2><span>1</span>Party size</h2><div class="chips guest-chips">${Array.from({ length: max }, (_, n) => `<label class="chip"><input type="radio" name="guests" value="${n + 1}" ${n === 1 ? 'checked' : ''}><span>${n + 1}</span></label>`).join('')}</div><p class="help">More than ${max} guests? Call <a href="${TEL}">${PHONE}</a>.</p></div>
@@ -312,16 +414,16 @@ function checkout() {
     $('#main').innerHTML = head('Your order is empty', 'Pickup') + `<div class="page-content"><a class="button primary" href="/menu">Browse the menu ${arrow}</a></div>`;
     return;
   }
-  $('#main').innerHTML = head('Checkout', 'Pickup · pay in store') + `<div class="page-content">${demoNote()}<div class="checkout-layout">
+  $('#main').innerHTML = head('Checkout', 'Pickup · pay in store') + `<div class="page-content"><div class="checkout-layout">
   <form class="form-card" id="request-form" novalidate>
     ${config.settings.accept_orders ? '' : `<p class="notice">Online pickup orders are paused. Please call <a href="${TEL}">${PHONE}</a>.</p>`}
     <div class="form-step"><h2><span>1</span>Pickup time</h2><div class="form-grid">${dateChips()}<fieldset class="chip-field full"><legend>Time</legend><div id="time-box"></div></fieldset><p class="help full" id="slot-help" aria-live="polite"></p></div></div>
     <div class="form-step"><h2><span>2</span>Your details</h2><div class="form-grid">${contactFields()}<label class="full">Order notes <span class="help">Optional</span><textarea name="notes" maxlength="1000" placeholder="Allergies or special requests"></textarea></label></div></div>
     <p class="form-error" role="alert" id="form-error"></p>
-    <button class="button primary block" type="submit"><span>${config.demo ? 'Place test order' : 'Place order'}</span><span id="place-total">${money(totals().total)}</span></button>
+    <button class="button primary block" type="submit"><span>Place order</span><span id="place-total">${money(totals().total)}</span></button>
     <p class="help">No online payment — pay at the counter. We’ll email you when the restaurant confirms. <a href="/privacy">Privacy</a></p>
   </form>
-  <aside class="panel order-summary"><div class="summary-head"><h2>Your order</h2><a class="text-link" href="/menu">Add items</a></div>${pickupNote()}<div id="checkout-bag">${bagHTML()}${totalHTML()}</div></aside>
+  <aside class="panel order-summary"><div class="summary-head"><h2>Your order</h2><a class="text-link" href="/menu">Add items</a></div><div id="checkout-bag">${bagHTML()}${totalHTML()}</div></aside>
   </div></div>`;
   wireRequest(false);
 }
@@ -370,7 +472,7 @@ async function statusPage() {
     const steps = kind === 'order' ? [['received', 'Received'], ['accepted', 'Confirmed'], ['preparing', 'Preparing'], ['ready', 'Ready'], ['collected', 'Collected']] : [['requested', 'Requested'], ['confirmed', 'Confirmed'], ['seated', 'Seated']];
     const at = steps.findIndex(s => s[0] === r.status), stopped = at < 0;
     const [title, description] = words[r.status] || ['An update from Oasis', ''];
-    $('#main').innerHTML = `<div class="page-content status-wrap"><article class="panel status-card">${demoNote()}<p class="eyebrow">${kind === 'order' ? 'Pickup order' : 'Table request'}</p><h1>${title}</h1><p>${description}</p>
+    $('#main').innerHTML = `<div class="page-content status-wrap"><article class="panel status-card"><p class="eyebrow">${kind === 'order' ? 'Pickup order' : 'Table request'}</p><h1>${title}</h1><p>${description}</p>
       ${stopped ? `<span class="status-pill stopped">${esc(r.status)}</span>` : `<ol class="progress">${steps.map(([, label], n) => `<li class="${n < at ? 'done' : n === at ? 'current' : ''}"${n === at ? ' aria-current="step"' : ''}><span></span>${label}</li>`).join('')}</ol>`}
       <div class="status-when"><span>${kind === 'order' ? 'Pickup' : 'Table'}</span><strong>${niceTime(r.data.time)}</strong>${r.data.guests ? `<span>${r.data.guests} ${r.data.guests === 1 ? 'guest' : 'guests'}</span>` : ''}</div>
       ${r.data.update_note ? `<p class="notice">${esc(r.data.update_note)}</p>` : ''}
@@ -382,13 +484,12 @@ async function statusPage() {
   } catch (e) { $('#main').innerHTML = head('Request not found') + `<div class="page-content"><p>${esc(e.message)}</p></div>`; }
 }
 function privacy() {
-  $('#main').innerHTML = head('Your privacy') + `<div class="page-content text-page"><p>This is an X Solutions demonstration website for Oasis Uzbek Kebab House. Test requests are not restaurant orders or confirmed bookings.</p><h2>Information you provide</h2><p>Pickup and table requests store your name, email, phone number, chosen time, dishes and any notes. Authorized administrators and employees can see and update these details to manage requests. Avoid entering sensitive information in notes.</p><h2>Admin access and email</h2><p>Admin sign-in uses Google to verify an invited email address. An administrator can separately connect a Google account to send confirmations through Gmail. Connecting a sender does not give that account admin access.</p><h2>Storage</h2><p>Your order is saved in this browser. If you choose “Remember my details”, your name, email and phone are also saved in this browser only; untick it on your next request to remove them. Essential session cookies support sign-in and protect forms. Request records are stored on the application server. This site does not collect payment card information and does not include advertising trackers.</p><h2>Questions or deletion</h2><p>For questions about this demo or to request removal of submitted information, contact <a href="https://xsolutionsmd.com">X Solutions</a>. For restaurant questions, call <a href="${TEL}">${PHONE}</a>.</p></div>`;
+  $('#main').innerHTML = head('Your privacy') + `<div class="page-content text-page"><p>Oasis Uzbek Kebab House takes pickup orders and table requests through this website.</p><h2>Information you provide</h2><p>Pickup and table requests store your name, email, phone number, chosen time, dishes and any notes. Authorized administrators and employees can see and update these details to manage requests. Avoid entering sensitive information in notes.</p><h2>Admin access and email</h2><p>Admin sign-in uses Google to verify an invited email address. An administrator can separately connect a Google account to send confirmations through Gmail. Connecting a sender does not give that account admin access.</p><h2>Storage</h2><p>Your order is saved in this browser. If you choose “Remember my details”, your name, email and phone are also saved in this browser only; untick it on your next request to remove them. Essential session cookies support sign-in and protect forms. Request records are stored on the application server. This site does not collect payment card information and does not include advertising trackers.</p><h2>Questions or deletion</h2><p>To ask about or remove information you submitted, call <a href="${TEL}">${PHONE}</a>.</p></div>`;
 }
 
 /* ---------- Global events ---------- */
 document.addEventListener('click', e => {
   const close = e.target.closest('[data-close]'); if (close) close.closest('dialog').close();
-  if (e.target.closest('[data-open-bag]')) { $('#toast').classList.remove('visible'); openBag(); }
   const add = e.target.closest('[data-add]'); if (add) { quickAdd(add.dataset.add); return; }
   const item = e.target.closest('[data-item]'); if (item) showItem(item.dataset.item);
   const p = e.target.closest('[data-photo]'); if (p) photo(Number(p.dataset.photo));
@@ -410,6 +511,15 @@ $$('dialog').forEach(d => d.addEventListener('click', e => {
 $('#open-bag').addEventListener('click', openBag);
 $('#open-nav').addEventListener('click', () => $('#nav-dialog').showModal());
 $('#year').textContent = new Date().getFullYear();
+// Header tightens once the page scrolls.
+const onScroll = () => document.body.classList.toggle('scrolled', scrollY > 8);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+// Sections fade up as they come into view. Skipped entirely for reduced motion.
+function reveal() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  $$('.section-heading, .dish-grid, .menu-category, .form-card, .order-summary, .visit-block, .status-card, .cuisine-card, .about-strip').forEach((el, n) => { el.classList.add('reveal'); el.style.setProperty('--d', (n % 4) * 60 + 'ms'); io.observe(el); });
+}
 $$('.main-nav a, #nav-dialog nav a').forEach(a => { if (a.pathname === location.pathname) a.setAttribute('aria-current', 'page'); });
 
 async function init() {
@@ -424,8 +534,9 @@ async function init() {
       return;
     }
     renderChrome();
-    const pages = { '/': home, '/menu': menuPage, '/gallery': gallery, '/visit': visit, '/reserve': reservation, '/checkout': checkout, '/privacy': privacy };
+    const pages = { '/': home, '/menu': menuPage, '/gallery': gallery, '/visit': visit, '/reserve': reservation, '/checkout': checkout, '/privacy': privacy, '/about': about };
     if (pages[path]) pages[path]();
+    if (path !== '/menu') reveal();
     else if (/^\/(order|reservation)\//.test(path)) statusPage();
   } catch (e) {
     $('#main').innerHTML = `<div class="page-content"><h1>We’ll be right back.</h1><p>${esc(e.message)}</p><a class="button" href="/">Try again</a></div>`;
