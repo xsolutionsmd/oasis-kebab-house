@@ -58,3 +58,5 @@ Menu panel / full-screen hero pass: category jumps measured at 16px below the he
 Checkout button pass: button hidden with an empty order, shows "2 Checkout $12.00" after two adds, navigates to checkout and hides there; header-to-first-category gap 28px on desktop. Category jumps, order/reservation flows, scroll probe, overflow sweep and 18 app tests pass locally. Yelp pages, photo CDN and the web fetcher all returned 403.
 
 About page: /about added to the server routes and the no-admin-link test (18 pass); overflow sweep now includes /about. Instagram's logged-out profile page is an empty app shell and its profile data endpoint requires login, so no additional Instagram posts or videos were collected.
+
+Calm hero / item view / About video: motion energy measured 14.93 -> 7.03 per frame (53% less) and loop seam 7.34 vs 6.13 typical frame step; item view measured 960x560 with the photo filling its half. Order/reservation flows, category jumps, scroll probe, overflow sweep and 18 app tests pass locally.

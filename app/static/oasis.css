@@ -368,20 +368,30 @@ dialog[open]::backdrop { animation: fade .28s ease; }
 @keyframes fade { from { opacity: 0; } }
 
 
-/* ---------- Hero: full-screen background video(s) ---------- */
-.hero { position: relative; isolation: isolate; overflow: hidden; height: calc(100svh - var(--header)); min-height: 540px; max-height: 1000px; display: flex; align-items: flex-end; justify-content: center; text-align: center; color: #fff; background: var(--lapis-deep); }
-.hero-videos, .hero-videos video { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero-videos { z-index: -2; }
-.hero-videos video { object-fit: cover; object-position: center 58%; opacity: 0; transition: opacity 1.2s ease; }
+/* ---------- Hero: full screen. Desktop: copy on the pattern, the portrait video edge to edge on the
+   right at its own proportions (no enlargement). Phones: the video fills the screen behind the copy. ---------- */
+.hero { --hero-h: max(560px, min(calc(100svh - var(--header)), 1000px)); position: relative; isolation: isolate; height: var(--hero-h); display: grid; grid-template-columns: minmax(0, 1fr) calc(var(--hero-h) * 720 / 990); align-items: center; }
+.hero-videos { position: relative; height: 100%; overflow: hidden; background: var(--lapis-deep); grid-column: 2; grid-row: 1; }
+.hero-videos video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
 .hero-videos video.on { opacity: 1; }
-.hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, #07141f40 0%, #07141f14 35%, #07141fd9 100%); }
-.hero-copy { padding: 0 var(--gutter) clamp(48px, 10vh, 104px); max-width: 880px; }
-.hero h1 { color: #fff; font-size: clamp(44px, 6vw, 84px); line-height: 1.02; text-shadow: 0 2px 24px #0006; }
-.hero .lede { margin: 18px auto 0; font-size: 19px; color: #eef2f5; text-shadow: 0 1px 12px #0008; }
-.hero .hero-actions { justify-content: center; }
+.hero-copy { grid-column: 1; grid-row: 1; justify-self: end; width: min(100%, 640px); padding: 0 clamp(32px, 6vw, 96px) 0 var(--gutter); }
+.hero h1 { color: var(--blue-deep); font-size: clamp(44px, 5.2vw, 80px); line-height: 1.02; }
+.hero .lede { margin-top: 18px; font-size: 19px; color: var(--muted); }
+.hero .button.ghost { border-color: var(--ink); color: var(--ink); }
+.hero .button.ghost:hover { background: var(--ink); color: #fff; }
 /* Keyboard-only pause control: hidden until focused. */
-.video-toggle { position: absolute; left: 50%; top: 16px; translate: -50% -200%; padding: 8px 14px; border-radius: 999px; background: #0f1a22cc; color: #fff; font-size: 14px; transition: translate .2s; }
-.video-toggle:focus-visible { translate: -50% 0; }
+.video-toggle { position: absolute; right: 16px; top: 16px; translate: 0 -200%; padding: 8px 14px; border-radius: 999px; background: #0f1a22cc; color: #fff; font-size: 14px; transition: translate .2s; z-index: 2; }
+.video-toggle:focus-visible { translate: 0 0; }
+@media (max-width: 860px) {
+  .hero { display: flex; align-items: flex-end; justify-content: center; text-align: center; color: #fff; overflow: hidden; background: var(--lapis-deep); }
+  .hero-videos { position: absolute; inset: 0; z-index: -2; }
+  .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, #07141f30 0%, #07141f10 35%, #07141fd9 100%); }
+  .hero-copy { width: auto; padding: 0 var(--gutter) clamp(40px, 8vh, 80px); }
+  .hero h1 { color: #fff; font-size: clamp(38px, 10.5vw, 56px); text-shadow: 0 2px 24px #0006; }
+  .hero .lede { color: #eef2f5; font-size: 16px; text-shadow: 0 1px 12px #0008; }
+  .hero .hero-actions { justify-content: center; }
+  .hero .button.ghost { border-color: #ffffff66; color: #fff; }
+}
 
 /* ---------- Menu: side panel, rounded item cards ---------- */
 .ordering-layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 36px; max-width: 1320px; margin: 0 auto; padding: 28px var(--gutter) 120px; transition: grid-template-columns .35s cubic-bezier(.2,.7,.2,1); }
@@ -418,9 +428,6 @@ body.side-collapsed .side-toggle { rotate: 180deg; }
   body.side-collapsed .ordering-layout { grid-template-columns: 52px minmax(0, 1fr); }
 }
 @media (max-width: 860px) {
-  .hero { min-height: 520px; }
-  .hero h1 { font-size: clamp(38px, 10.5vw, 56px); }
-  .hero .lede { font-size: 16px; }
   .ordering-layout, body.side-collapsed .ordering-layout { grid-template-columns: minmax(0, 1fr); padding-top: 8px; }
   .browse-button { display: inline-flex; position: sticky; top: calc(var(--header) + 10px); z-index: 15; margin-bottom: 18px; background: #fff; box-shadow: 0 6px 18px #0a56881f; }
   .browse-button svg { width: 18px; height: 18px; }
@@ -479,6 +486,40 @@ body:has(.order-bar:not([hidden])) .toast { bottom: 96px; }
   .about-photo { order: -1; aspect-ratio: 4 / 3; }
 }
 @media (max-width: 560px) { .cuisine-grid { grid-template-columns: 1fr; } }
+
+
+/* About: click-to-load YouTube video (nothing loads from YouTube until it is played). */
+.about-video .section-heading { flex-direction: column; align-items: flex-start; gap: 8px; }
+.video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden; background: var(--lapis-deep); box-shadow: 0 0 0 1px #c8964f55, 0 30px 70px #0a568826; }
+.video-frame iframe, .video-play, .video-play img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-play { padding: 0; }
+.video-play img { object-fit: cover; transition: scale .6s ease, filter .3s; }
+.video-play:hover img { scale: 1.03; filter: brightness(.9); }
+.play-mark { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: #ffffffe6; color: var(--blue); box-shadow: 0 12px 40px #0006; transition: scale .25s cubic-bezier(.2,.7,.2,1); }
+.video-play:hover .play-mark { scale: 1.08; }
+.play-mark svg { width: 34px; height: 34px; fill: currentColor; stroke: none; margin-left: 4px; }
+.video-credit { margin-top: 10px; }
+
+
+/* Item view: a large photo beside the details on desktop; stacked on phones. */
+.item-dialog:has(.has-photo) { width: min(960px, calc(100vw - 48px)); max-width: none; }
+.item-dialog .dialog-body h2 { font-family: var(--serif); font-weight: 500; font-size: 40px; letter-spacing: -0.01em; }
+.item-sheet.has-photo .item-purchase { padding: 16px 24px 22px; }
+.item-sheet.has-photo .item-purchase > .button { min-width: 0; }
+.item-sheet.has-photo { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); max-height: min(86dvh, 720px); min-height: min(560px, 80dvh); }
+.item-media { position: relative; margin: 0; min-height: 420px; background: var(--lapis-deep); overflow: hidden; }
+.item-sheet.has-photo .dialog-image { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; aspect-ratio: auto; object-fit: cover; animation: photo-in .6s cubic-bezier(.2,.7,.2,1); }
+.item-media figcaption { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; background: #0f1a22b3; color: #fff; font-size: 12px; }
+.item-media figcaption a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.item-sheet.has-photo form { display: flex; flex-direction: column; min-height: 0; overflow: auto; }
+.item-sheet.has-photo .dialog-body { flex: 1; padding-top: 36px; }
+@keyframes photo-in { from { scale: 1.06; opacity: .4; } }
+@media (max-width: 760px) {
+  .item-sheet.has-photo { display: block; max-height: none; }
+  .item-media { min-height: 0; aspect-ratio: 4 / 3; }
+  .item-sheet.has-photo { min-height: 0; }
+  .item-dialog .dialog-body h2 { font-size: 32px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }

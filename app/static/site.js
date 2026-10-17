@@ -9,7 +9,9 @@ const media = n => '/static/media/' + n;
 // Real photos of Oasis dishes (restaurant Instagram and its printed menu), matched only where the dish is certain.
 const PHOTOS = { 'samarkand-plov': 'plov-dish.webp', 'plov-special': 'plov-dish.webp', 'tandoori-samsa': 'samsa.webp', 'samsa-special': 'samsa.webp', 'lagman': 'lagman.webp', 'shurpa': 'shurpa.webp', 'shish-kebab-special': 'kebab-special.webp' };
 const CATEGORY_PHOTOS = { Mains: 'plov-dish.webp', Kebabs: 'grill.webp', Starters: 'samsa.webp', Salads: 'salad.webp', Soups: 'lagman.webp', Seafood: 'shrimp.webp', 'Lunch Specials': 'kebab-special.webp' };
-const dishPhoto = i => PHOTOS[i.id] ? media(PHOTOS[i.id]) : i.image ? media(i.image) : '';
+// Openly licensed example photos (Wikimedia Commons) for dishes without an Oasis photo yet; credited in the item view.
+const EXAMPLE_PHOTOS = {};
+const dishPhoto = i => PHOTOS[i.id] ? media(PHOTOS[i.id]) : EXAMPLE_PHOTOS[i.id] ? media('examples/' + EXAMPLE_PHOTOS[i.id].file) : i.image ? media(i.image) : '';
 const PHONE = '410-777-9700', TEL = 'tel:+14107779700';
 const maps = 'https://www.google.com/maps/search/?api=1&query=Oasis+Uzbek+Kebab+House+1430+Reisterstown+Rd+Pikesville+MD';
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -253,7 +255,8 @@ function quickAdd(id) {
 }
 function showItem(id) {
   const i = items.find(i => i.id === id); if (!i) return;
-  $('#item-content').innerHTML = `${dishPhoto(i) ? `<img class="dialog-image" src="${dishPhoto(i)}" alt="${esc(i.name)}">` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add to order' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form>`;
+  const photo = dishPhoto(i), credit = EXAMPLE_PHOTOS[i.id];
+  $('#item-content').innerHTML = `<div class="item-sheet${photo ? ' has-photo' : ''}">${photo ? `<figure class="item-media"><img class="dialog-image" src="${photo}" alt="${esc(i.name)}">${credit ? `<figcaption>Example photo · <a href="${credit.page}" target="_blank" rel="noreferrer">${esc(credit.credit)}</a></figcaption>` : ''}</figure>` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add to order' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form></div>`;
   let quantity = 1; const form = $('#add-item');
   function recalc() {
     const f = new FormData(form), extra = i.options.filter((o, n) => String(f.get('option-' + n)).endsWith('(+$1)')).length * 100;
@@ -297,10 +300,18 @@ function about() {
     <div class="section-heading"><h2 id="cuisine-title">The Uzbek table</h2><p>Uzbek cooking grew along the Silk Road, where Persian, Turkic and Chinese traditions met. It is generous food built for sharing, centred on lamb, rice, bread and fresh herbs.</p></div>
     <div class="cuisine-grid">${UZBEK_TABLE.map(([img, name, text]) => `<article class="cuisine-card"><img src="${media(img)}" alt="${esc(name)}" loading="lazy"><div><h3>${esc(name)}</h3><p>${esc(text)}</p></div></article>`).join('')}</div>
   </section>
+  <section class="section about-video" aria-labelledby="video-title">
+    <div class="section-heading"><h2 id="video-title">Inside Oasis</h2><p>Take a walk through the dining room.</p></div>
+    <div class="video-frame" id="about-video"><button type="button" class="video-play" aria-label="Play the Inside Oasis video (YouTube)"><img src="${media('about-video.webp')}" alt="" loading="lazy"><span class="play-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></button></div>
+    <p class="help video-credit">Video: <a href="https://www.youtube.com/watch?v=72h_LgxQ5W4" target="_blank" rel="noreferrer">Oasis Uzbek Kebab House on YouTube</a></p>
+  </section>
   <section class="section about-dastarkhan">
     <div class="dastarkhan-copy"><h2>The dastarkhan</h2><p>In Uzbekistan a meal is laid out as a <em>dastarkhan</em>: the whole table set at once with bread, salads, fruit and pots of green tea, before the hot dishes arrive. Guests are welcomed first and fed generously. That spirit of hospitality is what we bring to every table.</p></div>
     <div class="about-strip">${[4, 7, 2].map(n => { const [img, label] = galleries[n]; return `<button type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"></button>`; }).join('')}</div>
   </section>`;
+  $('#about-video .video-play').addEventListener('click', () => {
+    $('#about-video').innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/72h_LgxQ5W4?autoplay=1&rel=0" title="Inside Oasis" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  });
 }
 
 /* ---------- Gallery & visit ---------- */
