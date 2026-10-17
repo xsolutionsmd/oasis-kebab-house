@@ -134,7 +134,7 @@ def test_admin_is_direct_access_only(client):
         def __init__(self):super().__init__();self.hrefs=[]
         def handle_starttag(self,tag,attrs):
             if tag=='a':self.hrefs.extend(v for k,v in attrs if k=='href')
-    for route in ['/','/menu','/gallery','/visit','/reserve','/checkout','/privacy']:
+    for route in ['/','/menu','/gallery','/visit','/about','/reserve','/checkout','/privacy']:
         links=Links();links.feed(client.get(route).text)
         assert not any(h.startswith('/admin') for h in links.hrefs)
     assert client.get('/admin',follow_redirects=True).status_code==200
