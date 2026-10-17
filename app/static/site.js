@@ -105,15 +105,14 @@ function bagHTML() {
   }).join('') + '</ul>';
 }
 function openBag() {
-  $('#bag-content').innerHTML = `<div class="drawer-body">${pickupNote()}${bagHTML()}</div><div class="drawer-foot">${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : `<a class="button primary block" href="/menu">Browse the menu ${arrow}</a>`}</div>`;
+  $('#bag-content').innerHTML = `<div class="drawer-body">${bagHTML()}</div><div class="drawer-foot">${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : `<a class="button primary block" href="/menu">Browse the menu ${arrow}</a>`}</div>`;
   if (!$('#bag-dialog').open) $('#bag-dialog').showModal();
 }
-function pickupNote() { return `<p class="pickup-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>Pickup at 1430 Reisterstown Rd · ready in about ${config.settings.pickup_lead} min · pay in store</span></p>`; }
 function updateOrderSummaries() {
   const count = bagCount(), bar = $('#order-bar');
   if (bar) { bar.hidden = !count; bar.innerHTML = `<span class="order-bar-count">${count}</span><strong>View order</strong><span>${money(totals().total)}</span>`; }
   const side = $('#menu-cart');
-  if (side) side.innerHTML = `<h2>Your order</h2>${pickupNote()}${bagHTML()}${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : ''}`;
+  if (side) side.innerHTML = `<h2>Your order</h2>${bagHTML()}${bag.length ? totalHTML() + `<a class="button primary block" href="/checkout"><span>Checkout</span><span>${money(totals().total)}</span></a>` : ''}`;
   $$('[data-in-bag]').forEach(el => { const q = bag.filter(l => l.id === el.dataset.inBag).reduce((n, l) => n + l.quantity, 0); el.textContent = q ? q + ' in order' : ''; });
   if ($('#checkout-bag') && bag.length) $('#checkout-bag').innerHTML = bagHTML() + totalHTML();
   if ($('#place-total')) $('#place-total').textContent = money(totals().total);
@@ -136,26 +135,36 @@ function home() {
   const signature = ['samarkand-plov', 'lagman', 'tandoori-samsa', 'shish-kebab-special'].map(id => items.find(i => i.id === id)).filter(Boolean);
   $('#main').innerHTML = `
   <section class="hero" aria-label="Welcome to Oasis">
+    <div class="hero-videos" id="hero-videos" aria-hidden="true">${HERO_CLIPS.map((c, n) => `<video muted playsinline preload="${n ? 'none' : 'auto'}" ${HERO_CLIPS.length === 1 ? 'loop' : ''} poster="${media(c.poster)}"${n ? '' : ' class="on"'}><source src="${media(c.src)}" type="video/mp4"></video>`).join('')}</div>
     <div class="hero-copy">
       <h1>Oasis Uzbek Kebab House</h1>
       <p class="lede">Halal Uzbek food · Pikesville, MD · Pickup and dine-in</p>
-      <div class="hero-actions"><a class="button primary" href="/menu">Order pickup ${arrow}</a><a class="button" href="/reserve">Reserve a table</a></div>
+      <div class="hero-actions"><a class="button saffron" href="/menu">Order pickup ${arrow}</a><a class="button ghost" href="/reserve">Reserve a table</a></div>
     </div>
-    <figure class="hero-media">
-      <video id="hero-video" muted loop playsinline preload="auto" poster="${media('plov.webp')}" aria-label="Samarkand plov being served from the kazan at Oasis"><source src="${media('plov.mp4')}" type="video/mp4"></video>
-      <button class="video-toggle" id="video-toggle" type="button" aria-label="Play video"></button>
-    </figure>
+    <button class="video-toggle" id="video-toggle" type="button">Pause background video</button>
   </section>
   <section class="section popular">
     <div class="section-heading"><img class="ornament" src="${media('mandala.webp')}" alt="" width="96" height="96"><h2>Popular dishes</h2><a class="text-link" href="/menu">Full menu ${arrow}</a></div>
     <div class="dish-grid">${signature.map(dishCard).join('')}</div>
   </section>`;
-  const video = $('#hero-video'), toggle = $('#video-toggle');
-  const update = () => { toggle.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video'); toggle.innerHTML = video.paused ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>' : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'; };
-  video.addEventListener('play', update); video.addEventListener('pause', update);
-  toggle.addEventListener('click', () => video.paused ? video.play().catch(() => toast('The video is unavailable.')) : video.pause());
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) video.play().catch(() => {});
-  update();
+  heroPlaylist();
+}
+// Background clips play one after another (a single clip just loops). The pause control is
+// visually hidden until it receives keyboard focus, so it stays available without showing on screen.
+const HERO_CLIPS = [{ src: 'plov.mp4', poster: 'plov.webp' }];
+function heroPlaylist() {
+  const videos = $$('#hero-videos video'), toggle = $('#video-toggle');
+  let current = 0, paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const play = v => { if (!paused) v.play().catch(() => {}); };
+  videos.forEach((v, n) => v.addEventListener('ended', () => {
+    if (videos.length < 2) return;
+    const next = videos[(n + 1) % videos.length];
+    next.currentTime = 0; next.preload = 'auto'; play(next);
+    next.classList.add('on'); v.classList.remove('on'); current = (n + 1) % videos.length;
+  }));
+  const label = () => { toggle.textContent = paused ? 'Play background video' : 'Pause background video'; };
+  toggle.addEventListener('click', () => { paused = !paused; paused ? videos[current].pause() : play(videos[current]); label(); });
+  label(); play(videos[0]);
 }
 
 /* ---------- Menu ---------- */
@@ -167,20 +176,49 @@ function menuPage() {
   $('#main').innerHTML = `
   <div class="menu-top"><h1>Menu</h1></div>
   ${closed ? '<p class="notice">Online pickup orders are paused right now. Please call <a href="' + TEL + '">' + PHONE + '</a>.</p>' : ''}
-  <div class="menu-tools"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
-  <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav></div>
-  <div class="ordering-layout"><div class="ordering-main"><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div><aside class="menu-cart" id="menu-cart" aria-label="Your order"></aside></div>
+  <div class="ordering-layout">
+    <aside class="menu-side" id="menu-side" aria-label="Browse the menu">
+      <div class="menu-side-head"><span>Browse</span><button class="icon-button side-toggle" id="side-toggle" type="button" aria-expanded="true" aria-controls="menu-side-body" aria-label="Hide menu sections"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button></div>
+      <div class="menu-side-body" id="menu-side-body">
+        <label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span class="visually-hidden">Search the menu</span><input type="search" id="menu-search" placeholder="Search dishes" autocomplete="off"></label>
+        <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav>
+      </div>
+    </aside>
+    <div class="ordering-main"><button class="button small browse-button" id="browse-button" type="button" aria-controls="menu-side"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Sections &amp; search</button><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div>
+    <aside class="menu-cart" id="menu-cart" aria-label="Your order"></aside>
+  </div>
   <button class="order-bar" id="order-bar" type="button" hidden></button>`;
   drawMenu(); updateOrderSummaries();
   $('#menu-search').addEventListener('input', e => { search = e.target.value; drawMenu(); });
   $('#order-bar').addEventListener('click', openBag);
   $('.category-tabs').addEventListener('click', e => {
     const a = e.target.closest('a'); if (!a) return;
+    e.preventDefault();
     if (search) { search = ''; $('#menu-search').value = ''; drawMenu(); }
-    setActiveTab(a.hash.slice(1));
+    jumpTo(a.hash.slice(1));
+    document.body.classList.remove('side-open');
   });
+  // Desktop: the panel collapses to a slim rail (remembered). Phones: it slides in over the menu.
+  const side = $('#menu-side'), toggle = $('#side-toggle');
+  const setCollapsed = c => { document.body.classList.toggle('side-collapsed', c); toggle.setAttribute('aria-expanded', String(!c)); toggle.setAttribute('aria-label', c ? 'Show menu sections' : 'Hide menu sections'); try { localStorage.setItem('oasis-side', c ? 'closed' : 'open'); } catch {} };
+  try { if (localStorage.getItem('oasis-side') === 'closed') setCollapsed(true); } catch {}
+  toggle.addEventListener('click', () => matchMedia('(max-width: 860px)').matches ? document.body.classList.remove('side-open') : setCollapsed(!document.body.classList.contains('side-collapsed')));
+  $('#browse-button').addEventListener('click', () => { document.body.classList.add('side-open'); $('#menu-search').focus({ preventScroll: true }); });
+  side.addEventListener('keydown', e => { if (e.key === 'Escape') document.body.classList.remove('side-open'); });
+  document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('#menu-side, #browse-button')) document.body.classList.remove('side-open'); });
   const selected = new URLSearchParams(location.search).get('item');
   if (selected) showItem(selected);
+}
+// Scroll so the category heading sits just below the sticky header, then hold the highlight
+// on the chosen category until the smooth scroll settles.
+let jumping = 0;
+function jumpTo(id) {
+  const el = document.getElementById(id); if (!el) return;
+  const browse = $('#browse-button'), floating = browse && getComputedStyle(browse).display !== 'none' ? browse.offsetHeight + 14 : 0;
+  const top = el.getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - floating - 16;
+  setActiveTab(id); jumping = Date.now();
+  scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  history.replaceState(null, '', '#' + id);
 }
 function setActiveTab(id) {
   $$('.category-tabs a').forEach(a => {
@@ -188,9 +226,7 @@ function setActiveTab(id) {
     a.classList.toggle('active', active);
     if (!active) { a.removeAttribute('aria-current'); return; }
     a.setAttribute('aria-current', 'true');
-    // Scroll only the tab strip sideways. scrollIntoView also moved the page and fought the reader's own scrolling.
-    const strip = a.parentElement;
-    if (a.offsetLeft < strip.scrollLeft || a.offsetLeft + a.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+
   });
 }
 function menuRow(i) {
@@ -205,7 +241,7 @@ function drawMenu() {
     : `<p class="empty" role="status">No dishes match “${esc(search)}”.</p>`;
   updateOrderSummaries();
   menuObserver?.disconnect();
-  menuObserver = new IntersectionObserver(entries => { const hit = entries.find(e => e.isIntersecting); if (hit) setActiveTab(hit.target.id); }, { rootMargin: '-160px 0px -65% 0px' });
+  menuObserver = new IntersectionObserver(entries => { const hit = entries.find(e => e.isIntersecting); if (hit && Date.now() - jumping > 900) setActiveTab(hit.target.id); }, { rootMargin: '-100px 0px -65% 0px' });
   $$('.menu-category').forEach(s => menuObserver.observe(s));
 }
 function quickAdd(id) {
@@ -323,7 +359,7 @@ function checkout() {
     <button class="button primary block" type="submit"><span>Place order</span><span id="place-total">${money(totals().total)}</span></button>
     <p class="help">No online payment — pay at the counter. We’ll email you when the restaurant confirms. <a href="/privacy">Privacy</a></p>
   </form>
-  <aside class="panel order-summary"><div class="summary-head"><h2>Your order</h2><a class="text-link" href="/menu">Add items</a></div>${pickupNote()}<div id="checkout-bag">${bagHTML()}${totalHTML()}</div></aside>
+  <aside class="panel order-summary"><div class="summary-head"><h2>Your order</h2><a class="text-link" href="/menu">Add items</a></div><div id="checkout-bag">${bagHTML()}${totalHTML()}</div></aside>
   </div></div>`;
   wireRequest(false);
 }

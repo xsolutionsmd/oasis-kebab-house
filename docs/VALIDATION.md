@@ -52,3 +52,5 @@ Full-screen hero pass: Playwright order and reservation flows (1440/390px), over
 Whole-video hero, menu photos and scroll fix: a wheel-scroll probe on /menu previously stepped backwards (368→335, 1072→1070 …) on desktop; after the fix every page scrolls in full 400px steps at 1440 and 390px. Same order/reservation flows, overflow sweep and 18 app tests pass locally.
 
 Motion pass: reveal-on-scroll verified with real wheel scrolling (all revealed blocks reach their visible state at 1440 and 390px); scroll probe still steps a full 400px everywhere; order/reservation flows, overflow sweep and 18 app tests pass.
+
+Menu panel / full-screen hero pass: category jumps measured at 16px below the header for Soups, Desserts, Kebabs and Lunch Specials on desktop (20px below the floating button on phones); + button centre unchanged on hover; panel collapses to 52px and expands to 236px; pickup note removed. Order/reservation flows, scroll probe, overflow sweep and 18 app tests pass locally.
