@@ -430,9 +430,9 @@ body.side-collapsed .side-toggle { rotate: 180deg; }
 }
 @media (max-width: 860px) {
   .ordering-layout, body.side-collapsed .ordering-layout { grid-template-columns: minmax(0, 1fr); padding-top: 8px; }
-  .browse-button { display: inline-flex; position: sticky; top: calc(var(--header) + 10px); z-index: 15; margin-bottom: 18px; background: #fff; box-shadow: 0 6px 18px #0a56881f; }
-  .browse-button svg { width: 18px; height: 18px; }
-  .menu-side, body.side-collapsed .menu-side { position: fixed; z-index: 50; top: 0; bottom: 0; left: 0; width: min(300px, 84vw); max-height: none; border-radius: 0 18px 18px 0; padding: 18px; background: #fff; translate: -105% 0; transition: translate .32s cubic-bezier(.2,.7,.2,1); box-shadow: 0 20px 60px #0f1a2240; }
+  .browse-button { display: grid; position: sticky; top: calc(var(--header) + 10px); z-index: 15; width: 44px; height: 44px; margin-bottom: 18px; background: #fff; border: 1px solid var(--line); box-shadow: 0 6px 18px #0a56881f; }
+  .browse-button svg { width: 20px; height: 20px; }
+  .menu-side, body.side-collapsed .menu-side { position: fixed; z-index: 50; top: 0; bottom: 0; left: 0; align-self: stretch; width: min(300px, 84vw); max-height: none; border-radius: 0 18px 18px 0; padding: 18px; background: #fff; translate: -105% 0; transition: translate .32s cubic-bezier(.2,.7,.2,1); box-shadow: 0 20px 60px #0f1a2240; }
   body.side-open .menu-side { translate: 0 0; }
   body.side-collapsed .menu-side-head span, body.side-collapsed .menu-side-body { display: revert; }
   body.side-collapsed .side-toggle, .side-toggle { rotate: none; }
@@ -530,3 +530,13 @@ body:has(.order-bar:not([hidden])) .toast { bottom: 96px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+/* Page underneath stays still while the menu panel or a dialog is open. */
+html.scroll-locked, html.scroll-locked body { overflow: hidden; }
+.menu-side, dialog { overscroll-behavior: contain; }
+/* Phones: keep "Add to order" and the total inside the button for every item, with or without a photo. */
+@media (max-width: 760px) {
+  .item-purchase, .item-sheet.has-photo .item-purchase { gap: 10px; padding: 14px 16px 18px; }
+  .item-purchase > .button, .item-sheet.has-photo .item-purchase > .button { min-width: 0; gap: 10px; padding: 12px 14px; }
+  .item-quantity button { width: 38px; }
+}
+@media (max-width: 370px) { .item-purchase .long-label { display: none; } }

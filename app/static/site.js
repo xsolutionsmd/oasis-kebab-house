@@ -191,7 +191,7 @@ function menuPage() {
         <nav class="category-tabs" aria-label="Menu categories">${categories.map((c, n) => `<a href="#${categoryId(c)}"${n ? '' : ' class="active" aria-current="true"'}>${esc(c)}</a>`).join('')}</nav>
       </div>
     </aside>
-    <div class="ordering-main"><button class="button small browse-button" id="browse-button" type="button" aria-controls="menu-side"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Sections &amp; search</button><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div>
+    <div class="ordering-main"><button class="icon-button browse-button" id="browse-button" type="button" aria-controls="menu-side" aria-expanded="false" aria-label="Menu sections and search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button><div id="menu-grid"></div><p class="menu-footnote">Please tell us about any allergies before ordering. Prices and availability are confirmed by the restaurant.</p></div>
   </div>
 `;
   drawMenu(); updateOrderSummaries();
@@ -200,20 +200,34 @@ function menuPage() {
     const a = e.target.closest('a'); if (!a) return;
     e.preventDefault();
     if (search) { search = ''; $('#menu-search').value = ''; drawMenu(); }
+    setSideOpen(false);
     jumpTo(a.hash.slice(1));
-    document.body.classList.remove('side-open');
   });
   // Desktop: the panel collapses to a slim rail (remembered). Phones: it slides in over the menu.
   const side = $('#menu-side'), toggle = $('#side-toggle');
   const setCollapsed = c => { document.body.classList.toggle('side-collapsed', c); toggle.setAttribute('aria-expanded', String(!c)); toggle.setAttribute('aria-label', c ? 'Show menu sections' : 'Hide menu sections'); try { localStorage.setItem('oasis-side', c ? 'closed' : 'open'); } catch {} };
-  try { if (localStorage.getItem('oasis-side') === 'closed') setCollapsed(true); } catch {}
-  toggle.addEventListener('click', () => matchMedia('(max-width: 860px)').matches ? document.body.classList.remove('side-open') : setCollapsed(!document.body.classList.contains('side-collapsed')));
-  $('#browse-button').addEventListener('click', () => { document.body.classList.add('side-open'); $('#menu-search').focus({ preventScroll: true }); });
-  side.addEventListener('keydown', e => { if (e.key === 'Escape') document.body.classList.remove('side-open'); });
-  document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('#menu-side, #browse-button')) document.body.classList.remove('side-open'); });
+  // Collapsed by default; stays open only if the guest opened it last time.
+  let stored = null; try { stored = localStorage.getItem('oasis-side'); } catch {}
+  setCollapsed(stored !== 'open');
+  toggle.addEventListener('click', () => matchMedia('(max-width: 860px)').matches ? setSideOpen(false) : setCollapsed(!document.body.classList.contains('side-collapsed')));
+  // Opening moves focus to the close button, not the search field, so phones don't pop up the keyboard.
+  $('#browse-button').addEventListener('click', () => { setSideOpen(true); toggle.focus({ preventScroll: true }); });
+  side.addEventListener('keydown', e => { if (e.key === 'Escape') { setSideOpen(false); $('#browse-button').focus({ preventScroll: true }); } });
+  document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('#menu-side, #browse-button')) setSideOpen(false); });
   const selected = new URLSearchParams(location.search).get('item');
   if (selected) showItem(selected);
 }
+function setSideOpen(open) {
+  document.body.classList.toggle('side-open', open);
+  $('#browse-button')?.setAttribute('aria-expanded', String(open));
+  syncScrollLock();
+}
+// While the phone menu panel or any dialog is open, only that layer scrolls; the page underneath stays put.
+function syncScrollLock() {
+  const locked = (document.body.classList.contains('side-open') && !!$('#menu-side')) || !!$('dialog[open]');
+  document.documentElement.classList.toggle('scroll-locked', locked);
+}
+new MutationObserver(syncScrollLock).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
 // Scroll so the category heading sits just below the sticky header, then hold the highlight
 // on the chosen category until the smooth scroll settles.
 let jumping = 0;
@@ -257,7 +271,7 @@ function quickAdd(id) {
 function showItem(id) {
   const i = items.find(i => i.id === id); if (!i) return;
   const photo = dishPhoto(i), credit = EXAMPLE_PHOTOS[i.id];
-  $('#item-content').innerHTML = `<div class="item-sheet${photo ? ' has-photo' : ''}">${photo ? `<figure class="item-media"><img class="dialog-image" src="${photo}" alt="${esc(i.name)}">${credit ? `<figcaption>Example photo · <a href="${credit.page}" target="_blank" rel="noreferrer">${esc(credit.credit)}</a></figcaption>` : ''}</figure>` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add to order' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form></div>`;
+  $('#item-content').innerHTML = `<div class="item-sheet${photo ? ' has-photo' : ''}">${photo ? `<figure class="item-media"><img class="dialog-image" src="${photo}" alt="${esc(i.name)}">${credit ? `<figcaption>Example photo · <a href="${credit.page}" target="_blank" rel="noreferrer">${esc(credit.credit)}</a></figcaption>` : ''}</figure>` : ''}<form id="add-item"><div class="dialog-body"><p class="eyebrow">${esc(i.category)}</p><h2 id="item-title">${esc(i.name)}</h2>${i.description ? `<p>${esc(i.description)}</p>` : ''}<p class="price">${money(i.price)}</p>${i.options.map((o, n) => `<fieldset class="item-options"><legend>${esc(o.label)} <span>Required</span></legend>${o.values.map(v => `<label class="option-row"><input type="radio" name="option-${n}" value="${esc(v)}" required><span>${esc(v.replace(' (+$1)', ''))}</span>${v.endsWith('(+$1)') ? '<span class="option-extra">+$1.00</span>' : ''}</label>`).join('')}</fieldset>`).join('')}<p class="help">Allergies or special requests? Add them at checkout.</p></div><div class="item-purchase"><div class="item-quantity"><button type="button" id="item-minus" aria-label="Decrease quantity">−</button><output id="item-qty" aria-live="polite">1</output><button type="button" id="item-plus" aria-label="Increase quantity">+</button></div><button class="button primary" type="submit" ${i.available ? '' : 'disabled'}><span>${i.available ? 'Add<span class="long-label"> to order</span>' : 'Unavailable'}</span><span id="item-total">${money(i.price)}</span></button></div></form></div>`;
   let quantity = 1; const form = $('#add-item');
   function recalc() {
     const f = new FormData(form), extra = i.options.filter((o, n) => String(f.get('option-' + n)).endsWith('(+$1)')).length * 100;
@@ -315,7 +329,7 @@ function about() {
     <div class="about-strip">${[4, 7, 2].map(n => { const [img, label] = galleries[n]; return `<button type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"></button>`; }).join('')}</div>
   </section>`;
   $('#about-video .video-play').addEventListener('click', () => {
-    $('#about-video').innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/72h_LgxQ5W4?autoplay=1&rel=0" title="Inside Oasis" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    $('#about-video').innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/72h_LgxQ5W4?autoplay=1&rel=0" title="Inside Oasis" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
   });
 }
 
