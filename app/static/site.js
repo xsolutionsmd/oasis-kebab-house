@@ -271,6 +271,38 @@ function showItem(id) {
   $('#item-dialog').showModal();
 }
 
+/* ---------- About ---------- */
+// Facts about the restaurant come only from what it publishes (menu, sign, photos); the cuisine notes are general.
+const UZBEK_TABLE = [
+  ['plov-dish.webp', 'Plov', 'Uzbekistan’s national dish: rice, lamb, beef and yellow carrots cooked slowly in a cast-iron kazan. Palov culture is on UNESCO’s list of Intangible Cultural Heritage. Ours is Samarkand style.'],
+  ['samsa.webp', 'Samsa', 'Flaky pastry filled with chopped beef and onion, baked against the hot clay walls of a tandoor until the shell blisters and crisps.'],
+  ['lagman.webp', 'Lagman', 'Long homemade noodles under a rich stew of beef, peppers and vegetables, a Silk Road dish shared across Central Asia.'],
+  ['grill.webp', 'Kebabs', 'Shashlik: skewers of lamb, beef and chicken turned over charcoal until smoky at the edges.'],
+  ['bread.webp', 'Non', 'Round bread stamped in the centre and traditionally baked in a tandoor. At an Uzbek table it is broken by hand and shared first.'],
+  ['shurpa.webp', 'Shurpa', 'A clear, slow-simmered lamb and beef soup with whole carrots, potatoes and chickpeas, finished with fresh dill.'],
+];
+function about() {
+  $('#main').innerHTML = `
+  <section class="about-intro">
+    <div class="about-copy">
+      <img class="ornament" src="${media('mandala.webp')}" alt="" width="80" height="80">
+      <h1>About Oasis</h1>
+      <p class="lede">A halal Uzbek kitchen on Reisterstown Road in Pikesville, cooking the dishes of Samarkand and the Silk Road: plov from the kazan, samsa from the tandoor and kebabs over charcoal.</p>
+      <p>Join us in the dining room under carved wooden screens, sit out on the patio, or order pickup and take the meal home.</p>
+      <div class="hero-actions"><a class="button primary" href="/menu">See the menu ${arrow}</a><a class="button" href="/reserve">Reserve a table</a></div>
+    </div>
+    <figure class="about-photo"><img src="${media('interior.webp')}" alt="The Oasis dining room with carved Uzbek wooden screens"></figure>
+  </section>
+  <section class="section about-cuisine" aria-labelledby="cuisine-title">
+    <div class="section-heading"><h2 id="cuisine-title">The Uzbek table</h2><p>Uzbek cooking grew along the Silk Road, where Persian, Turkic and Chinese traditions met. It is generous food built for sharing, centred on lamb, rice, bread and fresh herbs.</p></div>
+    <div class="cuisine-grid">${UZBEK_TABLE.map(([img, name, text]) => `<article class="cuisine-card"><img src="${media(img)}" alt="${esc(name)}" loading="lazy"><div><h3>${esc(name)}</h3><p>${esc(text)}</p></div></article>`).join('')}</div>
+  </section>
+  <section class="section about-dastarkhan">
+    <div class="dastarkhan-copy"><h2>The dastarkhan</h2><p>In Uzbekistan a meal is laid out as a <em>dastarkhan</em>: the whole table set at once with bread, salads, fruit and pots of green tea, before the hot dishes arrive. Guests are welcomed first and fed generously. That spirit of hospitality is what we bring to every table.</p></div>
+    <div class="about-strip">${[4, 7, 2].map(n => { const [img, label] = galleries[n]; return `<button type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"></button>`; }).join('')}</div>
+  </section>`;
+}
+
 /* ---------- Gallery & visit ---------- */
 function gallery() {
   $('#main').innerHTML = head('Gallery', 'Food, place & tradition') + `<div class="page-content"><div class="gallery-grid">${galleries.map(([img, label], n) => `<button class="gallery-tile" type="button" data-photo="${n}" aria-label="View photo: ${esc(label)}"><img src="${media(img)}" alt="${esc(label)}" loading="lazy"><span>${esc(label)}</span></button>`).join('')}</div><p class="gallery-credit">Photos from <a href="https://www.instagram.com/oasiskebabhouse/" target="_blank" rel="noreferrer">@oasiskebabhouse</a>. The Samarkand image celebrates our roots in Uzbekistan.</p></div>`;
@@ -456,7 +488,7 @@ addEventListener('scroll', onScroll, { passive: true }); onScroll();
 function reveal() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
   const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
-  $$('.section-heading, .dish-grid, .menu-category, .form-card, .order-summary, .visit-block, .status-card').forEach((el, n) => { el.classList.add('reveal'); el.style.setProperty('--d', (n % 4) * 60 + 'ms'); io.observe(el); });
+  $$('.section-heading, .dish-grid, .menu-category, .form-card, .order-summary, .visit-block, .status-card, .cuisine-card, .about-strip').forEach((el, n) => { el.classList.add('reveal'); el.style.setProperty('--d', (n % 4) * 60 + 'ms'); io.observe(el); });
 }
 $$('.main-nav a, #nav-dialog nav a').forEach(a => { if (a.pathname === location.pathname) a.setAttribute('aria-current', 'page'); });
 
@@ -472,7 +504,7 @@ async function init() {
       return;
     }
     renderChrome();
-    const pages = { '/': home, '/menu': menuPage, '/gallery': gallery, '/visit': visit, '/reserve': reservation, '/checkout': checkout, '/privacy': privacy };
+    const pages = { '/': home, '/menu': menuPage, '/gallery': gallery, '/visit': visit, '/reserve': reservation, '/checkout': checkout, '/privacy': privacy, '/about': about };
     if (pages[path]) pages[path]();
     if (path !== '/menu') reveal();
     else if (/^\/(order|reservation)\//.test(path)) statusPage();

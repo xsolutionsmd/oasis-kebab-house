@@ -56,3 +56,5 @@ Motion pass: reveal-on-scroll verified with real wheel scrolling (all revealed b
 Menu panel / full-screen hero pass: category jumps measured at 16px below the header for Soups, Desserts, Kebabs and Lunch Specials on desktop (20px below the floating button on phones); + button centre unchanged on hover; panel collapses to 52px and expands to 236px; pickup note removed. Order/reservation flows, scroll probe, overflow sweep and 18 app tests pass locally.
 
 Checkout button pass: button hidden with an empty order, shows "2 Checkout $12.00" after two adds, navigates to checkout and hides there; header-to-first-category gap 28px on desktop. Category jumps, order/reservation flows, scroll probe, overflow sweep and 18 app tests pass locally. Yelp pages, photo CDN and the web fetcher all returned 403.
+
+About page: /about added to the server routes and the no-admin-link test (18 pass); overflow sweep now includes /about. Instagram's logged-out profile page is an empty app shell and its profile data endpoint requires login, so no additional Instagram posts or videos were collected.
